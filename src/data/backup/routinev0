@@ -1,1 +1,51 @@
-#test
+#hardcoded version
+export const routines = [
+  {
+    id: "patanjaliJogging1",
+    label: "Patanjali Yogic Jogging Part 1",
+    description: "A short sample routine to test the modular UI architecture.",
+    safetyNote: "Start gently, keep movement rhythmic and controlled.",
+    steps: [
+      {
+        id: "step-1",
+        stepKey: "yogic-jogging-position-1",
+        names: { 
+          devanagari: "योगिक जॉगिंग स्थिति 1", 
+          roman: "Yogic Jogging Sthiti 1", 
+          english: "Yogic Jogging Position 1" 
+        },
+        type: "time",
+        reps: null,
+        duration: 60,
+        audioUrl: "",
+        videoUrl: "",
+        pictureUrl: "",
+        caution: "Do not hyperextend the knees.",
+        speech: { 
+          hi: "योगिक जॉगिंग स्थिति 1 प्रारंभ करें।", 
+          en: "Begin Yogic Jogging Position 1." 
+        }
+      },
+      {
+        id: "step-2",
+        stepKey: "hasta-sanchalan-kriya",
+        names: { 
+          devanagari: "हस्त संचालन क्रिया", 
+          roman: "Hasta Sanchalan Kriya", 
+          english: "Hand Movement Practice" 
+        },
+        type: "reps",
+        reps: 16,
+        duration: null,
+        audioUrl: "",
+        videoUrl: "",
+        pictureUrl: "",
+        caution: "Avoid jerky shoulder movements.",
+        speech: { 
+          hi: "हस्त संचालन क्रिया प्रारंभ करें।", 
+          en: "Begin Hand Movement Practice." 
+        }
+      }
+    ]
+  }
+];
