@@ -1,193 +1,255 @@
-import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Image as ImageIcon, Video, Volume2, VolumeX } from 'lucide-react';
+// src/App.jsx
+import { useState, useMemo } from 'react';
+import { Play, Pause, StepForward, RefreshCw, Volume2, VolumeX } from 'lucide-react';
+import useRoutineRunner from './hooks/useRoutineRunner'; // Assumed custom hook containing the V6 logic
 import { routines } from './data/routines';
-import ControlsPanel from './components/ControlsPanel';
-import RoutineStepList from './components/RoutineStepList';
-import { playAudioPrompt } from './lib/audio';
 
-export default function App() {
-  const [currentRoutine, setCurrentRoutine] = useState(routines[0]);
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [language, setLanguage] = useState('en');
-  const [omitStepName, setOmitStepName] = useState(false);
-  
-  // State for the live countdown timer
-  const [timeLeft, setTimeLeft] = useState(0);
+function App() {
+  // --- EXISTING LOGIC CONSUMED ---
+  // The V6 logic is assumed to be encapsulated in this hook.
+  const {
+    currentStep,
+    chosenRoutineKey,
+    setChosenRoutineKey,
+    timerStatus,
+    startTimer,
+    pauseTimer,
+    completeAndNext,
+    resetSession,
+    uiLanguage,
+    setUiLanguage,
+    audioLanguage,
+    setAudioLanguage,
+    isMuted,
+    setIsMuted,
+    totalStepsInRoutine,
+    completedSteps,
+    currentStepTimeTotal,
+    currentStepTimeLeft
+  } = useRoutineRunner();
 
-  const activeStep = currentRoutine.steps[activeStepIndex];
+  // Helper for routine dropdown options
+  const routineOptions = useMemo(() => {
+    return routines.map((routine) => ({
+      key: routine.id,
+      name: routine.label
+      // In V6, routine name might be simple or dynamic
+    }));
+  }, []);
 
-  // Calculate the required time whenever the step changes
-  useEffect(() => {
-    if (activeStep) {
-      if (activeStep.type === 'time') {
-        setTimeLeft(activeStep.duration);
-      } else if (activeStep.type === 'reps') {
-        // Default: 5 seconds per repetition
-        setTimeLeft(activeStep.reps * 5); 
-      }
-    }
-  }, [activeStepIndex, currentRoutine, activeStep]);
-
-  // The ticking countdown clock
-  useEffect(() => {
-    let interval = null;
-    if (isPlaying && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (isPlaying && timeLeft === 0) {
-      handleNext(); // Auto-advance when time is up
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, timeLeft]);
-
-  // Trigger audio on step change
-  useEffect(() => {
-    if (isPlaying && activeStep && timeLeft === (activeStep.type === 'time' ? activeStep.duration : activeStep.reps * 5)) {
-      playAudioPrompt(activeStep, language, omitStepName);
-    }
-  }, [activeStepIndex, isPlaying, language, omitStepName, activeStep, timeLeft]);
-
-  const handleNext = () => {
-    if (activeStepIndex < currentRoutine.steps.length - 1) {
-      setActiveStepIndex(prev => prev + 1);
-    } else {
-      setIsPlaying(false);
-      alert("Routine Complete. Well done!");
-    }
-  };
-
-  const handleReset = () => {
-    setActiveStepIndex(0);
-    setIsPlaying(false);
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-  };
-
-  // The Routine Picker Dropdown Handler
-  const handleRoutineChange = (e) => {
-    const selected = routines.find(r => r.id === e.target.value);
-    setCurrentRoutine(selected);
-    setActiveStepIndex(0);
-    setIsPlaying(false);
-  };
-
-  if (!activeStep) return null;
-
+  // --- RENDERING ---
   return (
-    <div className="min-h-screen flex flex-col md:flex-row max-w-7xl mx-auto p-4 gap-6">
-      <main className="flex-1 flex flex-col gap-6">
-        
-        {/* Header with Routine Dropdown */}
-        <header className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <div className="flex flex-col mb-4 gap-4">
-            
-            {/* ROUTINE PICKER */}
-            <div className="flex flex-col w-full md:max-w-md">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Select Routine</label>
-              <select 
-                className="text-lg font-bold bg-slate-100 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:ring-indigo-500"
-                value={currentRoutine.id}
-                onChange={handleRoutineChange}
-              >
-                {routines.map(r => (
-                  <option key={r.id} value={r.id}>{r.label}</option>
-                ))}
-              </select>
-            </div>
-            
-            <p className="text-slate-500 text-sm mt-1">{currentRoutine.description}</p>
-            
-            {/* Audio Settings */}
-            <div className="flex flex-col md:flex-row gap-4 bg-slate-50 p-3 rounded-lg border border-slate-200 items-start md:items-center">
-              <select 
-                className="bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="en">English Audio</option>
-                <option value="hi">Hindi Audio</option>
-              </select>
-              <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={omitStepName}
-                  onChange={(e) => setOmitStepName(e.target.checked)}
-                  className="rounded text-indigo-600 focus:ring-indigo-500"
-                />
-                {omitStepName ? <VolumeX className="w-4 h-4 text-slate-400"/> : <Volume2 className="w-4 h-4 text-indigo-500"/>}
-                Do not say step name
-              </label>
-            </div>
-          </div>
-          
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-3 text-amber-800 text-sm">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            <div>
-              <p className="font-semibold mb-1">Routine Safety</p>
-              <p>{currentRoutine.safetyNote}</p>
-            </div>
-          </div>
-        </header>
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-800 p-6 md:p-10">
+      <div className="max-w-7xl mx-auto space-y-10">
 
-        {/* Current Step Panel */}
-        <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex-1 flex flex-col relative">
-          <div className="text-center mb-6">
-            <h2 className="text-4xl font-bold text-slate-800 mb-2">{activeStep.names.devanagari}</h2>
-            <h3 className="text-xl text-slate-600 mb-1">{activeStep.names.roman}</h3>
-            {activeStep.names.english && <p className="text-slate-500">{activeStep.names.english}</p>}
+        {/* --- 1. SETTINGS CARD --- */}
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+          <header className="mb-10 border-b border-gray-100 pb-8">
+            <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight">Lata Yog Routine Guide</h1>
+            <p className="mt-4 text-xl text-slate-600">Canvas preview version for testing on desktop web.</p>
+          </header>
+
+          <div className="flex flex-col md:flex-row gap-8 items-end justify-between">
+            <div className="flex-grow flex flex-col md:flex-row gap-8">
+              {/* Routine Picker */}
+              <div className="flex-1 flex flex-col gap-2">
+                <label className="text-lg font-semibold text-slate-700" htmlFor="routineSelect">Choose routine</label>
+                <select
+                  id="routineSelect"
+                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all"
+                  value={chosenRoutineKey}
+                  onChange={(e) => setChosenRoutineKey(e.target.value)}
+                >
+                  <option value="" disabled>Select Routine...</option>
+                  {routineOptions.map(option => (
+                    <option key={option.key} value={option.key}>{option.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* UI Language */}
+              <div className="flex flex-col gap-2">
+                <label className="text-lg font-semibold text-slate-700" htmlFor="uiLang">UI language</label>
+                <select
+                  id="uiLang"
+                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
+                  value={uiLanguage}
+                  onChange={(e) => setUiLanguage(e.target.value)}
+                >
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi (हिंदी)</option>
+                </select>
+              </div>
+
+              {/* Audio Language */}
+              <div className="flex flex-col gap-2">
+                <label className="text-lg font-semibold text-slate-700" htmlFor="audioLang">Audio language</label>
+                <select
+                  id="audioLang"
+                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
+                  value={audioLanguage}
+                  onChange={(e) => setAudioLanguage(e.target.value)}
+                >
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi (हिंदी)</option>
+                  <option value="Both">Both (Cued)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Mute Toggle */}
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="flex items-center gap-3 p-4 px-6 border-2 border-slate-300 rounded-2xl bg-white hover:bg-slate-100 active:scale-95 transition-all text-slate-700"
+            >
+              {isMuted ? <VolumeX className="w-6 h-6 text-slate-500" /> : <Volume2 className="w-6 h-6 text-blue-600" />}
+              <span className="text-lg font-medium">{isMuted ? 'Unmute' : 'Mute'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* --- 2. CURRENT ACTIVITY CARD --- */}
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+          <div className="mb-6 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-slate-600">Current activity</h2>
+            {currentStep?.id && (
+              <span className="text-sm text-gray-500">Step ID: {currentStep.id}</span>
+            )}
           </div>
 
-          {activeStep.caution && (
-            <div className="mx-auto max-w-md w-full bg-red-50 border border-red-100 rounded text-red-700 text-sm p-3 text-center mb-6">
-              <span className="font-semibold">Caution: </span>{activeStep.caution}
-            </div>
-          )}
-
-          {/* Dynamic Media Placeholders */}
-          <div className="flex justify-center items-center gap-6 mb-6">
-            {/* Picture: Tries to load specific image, falls back to default.jpg if missing */}
-            {activeStep.pictureUrl ? (
-              <img 
-                src={activeStep.pictureUrl} 
-                alt={activeStep.names.roman}
-                className="w-48 h-32 object-cover bg-slate-100 rounded-lg border border-slate-200 shadow-sm"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            {/* Dynamic Media Container with Fallback (V6 Rule) */}
+            <div className="bg-slate-100 rounded-3xl flex items-center justify-center aspect-square border border-slate-200 shadow-inner overflow-hidden">
+              <img
+                src={currentStep?.pictureUrl || '/assets/images/default.jpg'}
+                alt={currentStep?.key || 'Step placeholder'}
+                className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.onerror = null; // Prevents an infinite loop if default.jpg is also missing
+                  e.target.onerror = null; // Prevent infinite loop
                   e.target.src = '/assets/images/default.jpg';
                 }}
               />
-            ) : (
-              <div className="w-32 h-24 bg-slate-50 rounded border border-slate-200 flex flex-col items-center justify-center text-slate-400">
-                <ImageIcon className="w-6 h-6 mb-1 opacity-50" />
-                <span className="text-xs">No Picture</span>
-              </div>
-            )}
+            </div>
 
-            {/* Video: Entirely hidden if the link is missing */}
-            {activeStep.videoUrl && (
-              <a href={activeStep.videoUrl} target="_blank" rel="noreferrer" className="w-48 h-32 bg-indigo-50 hover:bg-indigo-100 transition-colors rounded-lg border border-indigo-200 flex flex-col items-center justify-center text-indigo-600 shadow-sm cursor-pointer">
-                <Video className="w-8 h-8 mb-2" />
-                <span className="text-sm font-medium">Watch Video</span>
-              </a>
-            )}
+            {/* Step Details (Text Areas) */}
+            <div className="flex flex-col gap-6">
+              <h2 className="text-5xl font-bold text-slate-950 leading-tight">
+                {currentStep?.name || "Choose a Routine to Start"}
+              </h2>
+              {currentStep?.description && (
+                <p className="text-xl text-slate-600">{currentStep.description}</p>
+              )}
+              {currentStep?.notes && (
+                <p className="text-lg text-slate-500 italic bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  Notes: {currentStep.notes}
+                </p>
+              )}
+
+              {/* Type and Cautions Section */}
+              <div className="mt-4 space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                  Type: {currentStep?.type || "None"}
+                </span>
+                
+                {/* CAUTION BLOCK (direct data mapping) */}
+                {currentStep?.cautions && (
+                  <div className="bg-amber-50 text-amber-950 border-2 border-amber-200 rounded-2xl p-6 shadow-sm">
+                    <p className="text-lg leading-relaxed italic font-medium">
+                      <strong className="text-amber-900 not-italic">Safety:</strong> {currentStep.cautions}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- 3. SESSION CONTROLS CARD --- */}
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+            {/* Timer Display */}
+            <div className="flex items-center gap-4 bg-slate-100 p-2 px-6 rounded-full font-mono text-3xl font-medium tabular-nums text-slate-900 shadow-inner">
+              <span className="text-sm font-sans text-slate-600">Timer:</span>
+              <span>{Math.floor(currentStepTimeLeft / 60).toString().padStart(2, '0')}:{ (currentStepTimeLeft % 60).toString().padStart(2, '0')}</span>
+            </div>
+
+            {/* Control Buttons Group */}
+            <div className="flex items-center gap-4">
+              {/* Start/Resume */}
+              <button
+                onClick={startTimer}
+                disabled={timerStatus === 'running' || !currentStep}
+                className={`p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold transition-all active:scale-95 ${
+                  timerStatus === 'running'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                <Play className="w-6 h-6" />
+                {timerStatus === 'paused' ? 'Resume' : 'Start'}
+              </button>
+
+              {/* Pause */}
+              <button
+                onClick={pauseTimer}
+                disabled={timerStatus !== 'running'}
+                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Pause className="w-6 h-6" />
+                Pause
+              </button>
+
+              {/* Complete & Next */}
+              <button
+                onClick={completeAndNext}
+                disabled={!currentStep}
+                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <StepForward className="w-6 h-6" />
+                Complete & Next
+              </button>
+
+              {/* Reset */}
+              <button
+                onClick={resetSession}
+                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95"
+              >
+                <RefreshCw className="w-6 h-6" />
+                Reset
+              </button>
+            </div>
           </div>
 
-          {/* Pass the ticking timeLeft down to the visualizer */}
-          <ControlsPanel 
-            isPlaying={isPlaying} 
-            onTogglePlay={() => setIsPlaying(!isPlaying)} 
-            onNext={handleNext}
-            onReset={handleReset}
-            activeStep={{...activeStep, duration: timeLeft, type: 'time'}} 
-          />
-        </section>
-      </main>
+          {/* Progress Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-medium text-slate-700">Overall Progress</span>
+              <span className="text-xl font-bold text-blue-600">
+                {(totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0).toFixed(0)}%
+              </span>
+            </div>
+            
+            {/* The Progress Bar Container */}
+            <div className="w-full bg-slate-100 rounded-full h-5 relative border border-slate-200 shadow-inner overflow-hidden">
+              <div
+                className="absolute top-0 left-0 bottom-0 bg-blue-500 rounded-full transition-all duration-500 ease-out h-full"
+                style={{ width: `${totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0}%` }}
+              ></div>
+            </div>
 
-      <RoutineStepList 
-        steps={currentRoutine.steps} 
-        activeStepIndex={activeStepIndex} 
-      />
+            {/* Session Stats */}
+            <div className="flex items-center justify-between text-lg text-slate-600 mt-3 pt-3 border-t border-gray-100">
+              <p>Completed: {completedSteps} / {totalStepsInRoutine}</p>
+              {currentStep && (
+                <p>Target duration: {currentStepTimeTotal}s / step type: {currentStep.type}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
+
+export default App;
