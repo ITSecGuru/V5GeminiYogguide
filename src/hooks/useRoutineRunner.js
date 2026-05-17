@@ -4,7 +4,10 @@ import { routines } from '../data/routines';
 
 export default function useRoutineRunner() {
   // --- 1. SETTINGS STATE ---
-  const [chosenRoutineKey, setChosenRoutineKey] = useState('');
+  // Safely grab the first routine ID as the absolute default
+  const defaultRoutineId = routines.length > 0 ? routines[0].id : '';
+  const [chosenRoutineKey, setChosenRoutineKey] = useState(defaultRoutineId);
+  
   const [uiLanguage, setUiLanguage] = useState('English');
   const [audioLanguage, setAudioLanguage] = useState('English');
   const [isMuted, setIsMuted] = useState(false);
@@ -14,9 +17,17 @@ export default function useRoutineRunner() {
   const [timerStatus, setTimerStatus] = useState('idle'); // 'idle', 'running', 'paused'
   const [currentStepTimeLeft, setCurrentStepTimeLeft] = useState(0);
 
-  // --- 3. DERIVED DATA (V6 Architecture using pre-built routines) ---
-  // Find the routine object based on the selected ID
-  const routine = chosenRoutineKey ? routines.find(r => r.id === chosenRoutineKey) : null;
+  // --- 3. SAFETY OVERRIDE ---
+  // If the browser cache ever tries to force an empty key, snap it back to the first routine
+  useEffect(() => {
+    if (!chosenRoutineKey && routines.length > 0) {
+      setChosenRoutineKey(routines[0].id);
+    }
+  }, [chosenRoutineKey]);
+
+  // --- 4. DERIVED DATA ---
+  // Find the routine, but if chosenRoutineKey is somehow broken, fallback to routines[0]
+  const routine = routines.find(r => r.id === chosenRoutineKey) || routines[0];
   const steps = routine ? routine.steps : []; 
   
   const totalStepsInRoutine = steps.length;
@@ -28,7 +39,7 @@ export default function useRoutineRunner() {
     ? currentStep.duration || (currentStep.reps ? currentStep.reps * 5 : 0) 
     : 0;
 
-  // --- 4. EFFECTS ---
+  // --- 5. EFFECTS ---
   // Reset session when routine changes
   useEffect(() => {
     setCurrentStepIndex(0);
@@ -57,7 +68,7 @@ export default function useRoutineRunner() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerStatus, currentStepTimeLeft]);
 
-  // --- 5. ACTIONS ---
+  // --- 6. ACTIONS ---
   const startTimer = () => setTimerStatus('running');
   
   const pauseTimer = () => setTimerStatus('paused');
@@ -68,9 +79,9 @@ export default function useRoutineRunner() {
       const nextStep = steps[nextIndex];
       setCurrentStepIndex(nextIndex);
       setCurrentStepTimeLeft(nextStep.duration || (nextStep.reps ? nextStep.reps * 5 : 0));
-      setTimerStatus('idle'); // Stop timer for next step until user presses Start
+      setTimerStatus('idle');
     } else {
-      setTimerStatus('idle'); // Routine finished
+      setTimerStatus('idle');
       setCurrentStepTimeLeft(0);
     }
   };
@@ -85,6 +96,8 @@ export default function useRoutineRunner() {
   };
 
   return {
+    steps,
+    currentStepIndex,
     currentStep,
     chosenRoutineKey,
     setChosenRoutineKey,
@@ -102,7 +115,6 @@ export default function useRoutineRunner() {
     totalStepsInRoutine,
     completedSteps,
     currentStepTimeTotal,
-    currentStepTimeLeft,
-    routines // Exporting this so App.jsx can build the dropdown menu
+    currentStepTimeLeft
   };
 }
