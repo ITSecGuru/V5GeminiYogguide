@@ -1,12 +1,10 @@
 // src/App.jsx
 import { useState, useMemo } from 'react';
 import { Play, Pause, StepForward, RefreshCw, Volume2, VolumeX } from 'lucide-react';
-import useRoutineRunner from './hooks/useRoutineRunner'; // Assumed custom hook containing the V6 logic
+import useRoutineRunner from './hooks/useRoutineRunner'; 
 import { routines } from './data/routines';
 
 function App() {
-  // --- EXISTING LOGIC CONSUMED ---
-  // The V6 logic is assumed to be encapsulated in this hook.
   const {
     currentStep,
     chosenRoutineKey,
@@ -28,16 +26,14 @@ function App() {
     currentStepTimeLeft
   } = useRoutineRunner();
 
-  // Helper for routine dropdown options
+  // Helper for routine dropdown options using your pre-built array
   const routineOptions = useMemo(() => {
     return routines.map((routine) => ({
       key: routine.id,
-      name: routine.label
-      // In V6, routine name might be simple or dynamic
+      name: routine.label 
     }));
   }, []);
 
-  // --- RENDERING ---
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-800 p-6 md:p-10">
       <div className="max-w-7xl mx-auto space-y-10">
@@ -117,24 +113,24 @@ function App() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-            {/* Dynamic Media Container with Fallback (V6 Rule) */}
-            <div className="bg-slate-100 rounded-3xl flex items-center justify-center aspect-square border border-slate-200 shadow-inner overflow-hidden">
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            {/* Tiny Media Container: exactly 80x80 pixels (~2cm) */}
+            <div className="bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center w-20 h-20 border border-slate-200 shadow-inner overflow-hidden">
               <img
                 src={currentStep?.pictureUrl || '/assets/images/default.jpg'}
-                alt={currentStep?.key || 'Step placeholder'}
+                alt={currentStep?.stepKey || 'Step placeholder'}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop
+                  e.target.onerror = null; 
                   e.target.src = '/assets/images/default.jpg';
                 }}
               />
             </div>
 
             {/* Step Details (Text Areas) */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 w-full">
               <h2 className="text-5xl font-bold text-slate-950 leading-tight">
-                {currentStep?.name || "Choose a Routine to Start"}
+                {currentStep?.names?.english || currentStep?.names?.devanagari || "Choose a Routine to Start"}
               </h2>
               {currentStep?.description && (
                 <p className="text-xl text-slate-600">{currentStep.description}</p>
@@ -151,11 +147,11 @@ function App() {
                   Type: {currentStep?.type || "None"}
                 </span>
                 
-                {/* CAUTION BLOCK (direct data mapping) */}
-                {currentStep?.cautions && (
+                {/* CAUTION BLOCK */}
+                {currentStep?.caution && (
                   <div className="bg-amber-50 text-amber-950 border-2 border-amber-200 rounded-2xl p-6 shadow-sm">
                     <p className="text-lg leading-relaxed italic font-medium">
-                      <strong className="text-amber-900 not-italic">Safety:</strong> {currentStep.cautions}
+                      <strong className="text-amber-900 not-italic">Safety:</strong> {currentStep.caution}
                     </p>
                   </div>
                 )}
@@ -170,7 +166,7 @@ function App() {
             {/* Timer Display */}
             <div className="flex items-center gap-4 bg-slate-100 p-2 px-6 rounded-full font-mono text-3xl font-medium tabular-nums text-slate-900 shadow-inner">
               <span className="text-sm font-sans text-slate-600">Timer:</span>
-              <span>{Math.floor(currentStepTimeLeft / 60).toString().padStart(2, '0')}:{ (currentStepTimeLeft % 60).toString().padStart(2, '0')}</span>
+              <span>{Math.floor(currentStepTimeLeft / 60).toString().padStart(2, '0')}:{(currentStepTimeLeft % 60).toString().padStart(2, '0')}</span>
             </div>
 
             {/* Control Buttons Group */}
