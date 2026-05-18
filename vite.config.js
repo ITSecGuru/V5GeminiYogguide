@@ -8,7 +8,7 @@ export default defineConfig({
   // IMPORTANT: Replace 'YOUR-REPO-NAME' with your exact GitHub repository name!
   // Example: if your repo is github.com/username/lata-yog, make this '/lata-yog/'
   // base: '/YOUR-REPO-NAME/', 
-  base: '/V5GeminiYogguide/'
+  base: '/V5GeminiYogguide/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
