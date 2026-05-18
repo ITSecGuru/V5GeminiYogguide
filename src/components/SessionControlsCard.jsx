@@ -1,77 +1,93 @@
-import { Play, Pause, StepForward, RefreshCw } from 'lucide-react';
-
+// src/components/SessionControlsCard.jsx
 export default function SessionControlsCard({
-  currentStepTimeLeft, timerPercentRemaining, getTimerColor,
-  startTimer, pauseTimer, completeAndNext, resetSession,
-  timerStatus, currentStep, totalStepsInRoutine, completedSteps
+  currentStepTimeLeft,
+  timerPercentRemaining,
+  getTimerColor,
+  startTimer,
+  pauseTimer,
+  completeAndNext,
+  prevStep,
+  resetSession,
+  timerStatus,
+  currentStepIndex,
+  totalStepsInRoutine,
+  completedSteps
 }) {
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const overallProgress = totalStepsInRoutine > 0 
+    ? Math.round((completedSteps / totalStepsInRoutine) * 100) 
+    : 0;
+
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
-        
-        <div className="flex-1 w-full md:max-w-sm flex flex-col gap-3">
-          <div className="flex justify-between items-baseline">
-            <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Step Timer</span>
-            <span className="font-mono text-4xl font-extrabold tabular-nums text-slate-800 drop-shadow-sm">
-              {Math.floor(currentStepTimeLeft / 60).toString().padStart(2, '0')}:{(currentStepTimeLeft % 60).toString().padStart(2, '0')}
-            </span>
-          </div>
-          <div className="h-6 w-full bg-slate-100 rounded-full border border-slate-200 shadow-inner overflow-hidden">
-            <div
-              className="h-full transition-all duration-1000 ease-linear"
-              style={{ width: `${timerPercentRemaining}%`, backgroundColor: getTimerColor(timerPercentRemaining) }}
-            ></div>
-          </div>
+    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200">
+      <div className="mb-6">
+        <div className="flex justify-between text-sm font-semibold text-gray-600 mb-2">
+          <span>Step Timer</span>
+          <span className="text-2xl font-bold text-slate-900 font-mono">
+            {formatTime(currentStepTimeLeft)}
+          </span>
         </div>
-
-        <div className="flex items-center gap-4">
-          <button
-            onClick={startTimer}
-            disabled={timerStatus === 'running' || !currentStep}
-            className={`p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold transition-all active:scale-95 ${
-              timerStatus === 'running' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <Play className="w-6 h-6" />
-            {timerStatus === 'paused' ? 'Resume' : 'Start'}
-          </button>
-
-          <button
-            onClick={pauseTimer}
-            disabled={timerStatus !== 'running'}
-            className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Pause className="w-6 h-6" /> Pause
-          </button>
-
-          <button
-            onClick={completeAndNext}
-            disabled={!currentStep}
-            className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <StepForward className="w-6 h-6" /> Complete & Next
-          </button>
-
-          <button
-            onClick={resetSession}
-            className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95"
-          >
-            <RefreshCw className="w-6 h-6" /> Reset
-          </button>
+        <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div
+            className="h-3 rounded-full transition-all duration-1000 ease-linear"
+            style={{ 
+              width: `${timerPercentRemaining}%`,
+              backgroundColor: getTimerColor(timerPercentRemaining)
+            }}
+          ></div>
         </div>
       </div>
 
-      <div className="space-y-3 pt-6 border-t border-slate-100">
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-medium text-slate-700">Overall Session Progress</span>
-          <span className="text-xl font-bold text-blue-600">
-            {(totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0).toFixed(0)}%
-          </span>
+      <div className="flex flex-wrap gap-2 mb-6">
+        <button
+          onClick={startTimer}
+          disabled={timerStatus === 'running' || timerStatus === 'completed'}
+          className="flex-1 min-w-[80px] bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-2 rounded-xl transition-colors flex items-center justify-center gap-1 text-sm md:text-base"
+        >
+          ▶ Start
+        </button>
+        <button
+          onClick={pauseTimer}
+          disabled={timerStatus !== 'running'}
+          className="flex-1 min-w-[80px] bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-2 rounded-xl transition-colors flex items-center justify-center gap-1 text-sm md:text-base"
+        >
+          ⏸ Pause
+        </button>
+        <button
+          onClick={prevStep}
+          disabled={currentStepIndex === 0}
+          className="flex-1 min-w-[80px] bg-slate-600 hover:bg-slate-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-2 rounded-xl transition-colors flex items-center justify-center gap-1 text-sm md:text-base"
+        >
+          ⏪ Prev
+        </button>
+        <button
+          onClick={completeAndNext}
+          className="flex-1 min-w-[100px] bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-2 rounded-xl transition-colors flex items-center justify-center gap-1 text-sm md:text-base"
+        >
+          ⏭ Next
+        </button>
+        <button
+          onClick={resetSession}
+          className="flex-1 min-w-[80px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-2 rounded-xl transition-colors flex items-center justify-center gap-1 text-sm md:text-base"
+        >
+          🔄 Reset
+        </button>
+      </div>
+
+      <div>
+        <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
+          <span>Overall Session Progress</span>
+          <span>{overallProgress}%</span>
         </div>
-        <div className="w-full bg-slate-100 rounded-full h-4 relative border border-slate-200 shadow-inner overflow-hidden">
+        <div className="w-full bg-gray-100 rounded-full h-1.5">
           <div
-            className="absolute top-0 left-0 bottom-0 rounded-full transition-all duration-500 ease-out h-full"
-            style={{ width: `${totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0}%`, backgroundColor: '#3b82f6' }}
+            className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
+            style={{ width: `${overallProgress}%` }}
           ></div>
         </div>
       </div>

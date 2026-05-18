@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import useRoutineRunner from './hooks/useRoutineRunner'; 
 import { routines } from './data/routines';
 
-// Import our new modular components
 import SettingsCard from './components/SettingsCard';
 import CurrentActivityCard from './components/CurrentActivityCard';
 import SessionControlsCard from './components/SessionControlsCard';
@@ -12,7 +11,7 @@ import RoutinePlaylistCard from './components/RoutinePlaylistCard';
 function App() {
   const {
     steps, currentStepIndex, currentStep, chosenRoutineKey, setChosenRoutineKey,
-    timerStatus, startTimer, pauseTimer, completeAndNext, resetSession,
+    timerStatus, startTimer, pauseTimer, completeAndNext, prevStep, resetSession,
     uiLanguage, setUiLanguage, audioLanguage, setAudioLanguage,
     isMuted, setIsMuted, totalStepsInRoutine, completedSteps,
     currentStepTimeTotal, currentStepTimeLeft
@@ -32,8 +31,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-800 p-6 md:p-10">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-800 p-3 md:p-6">
+      <div className="max-w-3xl mx-auto space-y-4">
         
         <SettingsCard 
           chosenRoutineKey={chosenRoutineKey} setChosenRoutineKey={setChosenRoutineKey}
@@ -52,9 +51,10 @@ function App() {
           startTimer={startTimer}
           pauseTimer={pauseTimer}
           completeAndNext={completeAndNext}
+          prevStep={prevStep}
           resetSession={resetSession}
           timerStatus={timerStatus}
-          currentStep={currentStep}
+          currentStepIndex={currentStepIndex}
           totalStepsInRoutine={totalStepsInRoutine}
           completedSteps={completedSteps}
         />

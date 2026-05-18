@@ -1,67 +1,69 @@
-import { Volume2, VolumeX } from 'lucide-react';
-
+// src/components/SettingsCard.jsx
 export default function SettingsCard({
-  chosenRoutineKey, setChosenRoutineKey, routineOptions,
-  uiLanguage, setUiLanguage, audioLanguage, setAudioLanguage,
-  isMuted, setIsMuted
+  chosenRoutineKey,
+  setChosenRoutineKey,
+  routineOptions,
+  uiLanguage,
+  setUiLanguage,
+  audioLanguage,
+  setAudioLanguage,
+  isMuted,
+  setIsMuted
 }) {
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-      <header className="mb-10 border-b border-gray-100 pb-8">
-        <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight">Lata Yog Routine Guide 6.1</h1>
-        <p className="mt-4 text-xl text-slate-600">Canvas preview version for testing on desktop web.</p>
-      </header>
+    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200">
+      <div className="mb-6">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+          Lata Yog Routine Guide 6.1
+        </h1>
+        <p className="text-sm text-gray-500">
+          Canvas preview version for testing on desktop web.
+        </p>
+      </div>
 
-      <div className="flex flex-col md:flex-row gap-8 items-end justify-between">
-        <div className="flex-grow flex flex-col md:flex-row gap-8">
-          <div className="flex-1 flex flex-col gap-2">
-            <label className="text-lg font-semibold text-slate-700" htmlFor="routineSelect">Choose routine</label>
-            <select
-              id="routineSelect"
-              className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all"
-              value={chosenRoutineKey}
-              onChange={(e) => setChosenRoutineKey(e.target.value)}
-            >
-              {routineOptions.map(option => (
-                <option key={option.key} value={option.key}>{option.name}</option>
-              ))}
-            </select>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-700 mb-1">Choose routine</label>
+          <select
+            value={chosenRoutineKey}
+            onChange={(e) => setChosenRoutineKey(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+            {routineOptions.map((opt) => (
+              <option key={opt.key} value={opt.key}>{opt.name}</option>
+            ))}
+          </select>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-semibold text-slate-700" htmlFor="uiLang">UI language</label>
-            <select
-              id="uiLang"
-              className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
-              value={uiLanguage}
-              onChange={(e) => setUiLanguage(e.target.value)}
-            >
-              <option value="English">English</option>
-              <option value="Hindi">Hindi (हिंदी)</option>
-            </select>
-          </div>
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-700 mb-1">UI language</label>
+          <select
+            value={uiLanguage}
+            onChange={(e) => setUiLanguage(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+            <option value="English">English</option>
+            <option value="Devanagari">Devanagari</option>
+          </select>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-semibold text-slate-700" htmlFor="audioLang">Audio language</label>
-            <select
-              id="audioLang"
-              className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
-              value={audioLanguage}
-              onChange={(e) => setAudioLanguage(e.target.value)}
-            >
-              <option value="English">English</option>
-              <option value="Hindi">Hindi (हिंदी)</option>
-              <option value="Both">Both (Cued)</option>
-            </select>
-          </div>
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold text-gray-700 mb-1">Audio language</label>
+          <select
+            value={audioLanguage}
+            onChange={(e) => setAudioLanguage(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+            <option value="English">English</option>
+            <option value="Devanagari">Devanagari</option>
+          </select>
         </div>
 
         <button
           onClick={() => setIsMuted(!isMuted)}
-          className="flex items-center gap-3 p-4 px-6 border-2 border-slate-300 rounded-2xl bg-white hover:bg-slate-100 active:scale-95 transition-all text-slate-700"
+          className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium h-[42px]"
         >
-          {isMuted ? <VolumeX className="w-6 h-6 text-slate-500" /> : <Volume2 className="w-6 h-6 text-blue-600" />}
-          <span className="text-lg font-medium">{isMuted ? 'Unmute' : 'Mute'}</span>
+          {isMuted ? '🔇 Unmute' : '🔊 Mute'}
         </button>
       </div>
     </div>
