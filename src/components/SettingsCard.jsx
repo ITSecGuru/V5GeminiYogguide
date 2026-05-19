@@ -1,8 +1,16 @@
-// src/components/SettingsCard.jsx
+/**
+ * @file src/components/SettingsCard.jsx
+ * @description Enhanced configuration panel layout for Lata Yog Guide V7.3.
+ * Expands the routine selector component width dynamically to prevent text 
+ * truncation, and minifies audio controls down to a clean status symbol block.
+ */
+
+import React from 'react';
+
 export default function SettingsCard({
-  chosenRoutineKey,
-  setChosenRoutineKey,
-  routineOptions,
+  routines,
+  selectedRoutineId,
+  selectRoutine,
   uiLanguage,
   setUiLanguage,
   audioLanguage,
@@ -11,60 +19,93 @@ export default function SettingsCard({
   setIsMuted
 }) {
   return (
-    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200">
-      <div className="mb-6">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-          Lata Yog Routine Guide 6.1
-        </h1>
-        <p className="text-sm text-gray-500">
-          Canvas preview version for testing on desktop web.
+    <div className="w-full bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100">
+      
+      {/* Dynamic Selector Header Panel */}
+      <div className="mb-3.5">
+        <h2 className="text-md font-bold text-slate-900 uppercase tracking-tight">
+          Practice Control Deck
+        </h2>
+        <p className="text-xs text-slate-400 font-medium mt-0.5">
+          Choose your dynamic flow itinerary and control active system audio loops.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <div className="flex flex-col">
-          <label className="text-sm font-semibold text-gray-700 mb-1">Choose routine</label>
+      {/* PROMINENT CONFIGURATION MATRIX LAYOUT
+          Uses flexible responsive spans to make the routine bar much wider and prominent */}
+      <div className="grid grid-cols-12 gap-3 items-end">
+        
+        {/* 1. Dynamic Routine Picker (Spans 12 columns on small displays, 6 columns on large) */}
+        <div className="flex flex-col col-span-12 md:col-span-6">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5">
+            Active Yoga Routine Flow Journey
+          </label>
           <select
-            value={chosenRoutineKey}
-            onChange={(e) => setChosenRoutineKey(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+            value={selectedRoutineId || (routines && routines[0]?.id) || ""}
+            onChange={(e) => selectRoutine(e.target.value)}
+            className="w-full border-2 border-blue-100 rounded-xl p-2.5 bg-slate-50 text-slate-800 text-sm font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all cursor-pointer shadow-sm min-h-[44px]"
           >
-            {routineOptions.map((opt) => (
-              <option key={opt.key} value={opt.key}>{opt.name}</option>
-            ))}
+            {routines && routines.length > 0 ? (
+              routines.map((routine) => (
+                <option key={routine.id} value={routine.id}>
+                  {routine.label}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>No routines initialized</option>
+            )}
           </select>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-semibold text-gray-700 mb-1">UI language</label>
+        {/* 2. UI Localization Vector (Spans 6 columns on mobile, 2 columns on large screens) */}
+        <div className="flex flex-col col-span-5 sm:col-span-4 md:col-span-2">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5 truncate">
+            Display
+          </label>
           <select
-            value={uiLanguage}
-            onChange={(e) => setUiLanguage(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+            value={uiLanguage || "English"}
+            onChange={(e) => setUiLanguage && setUiLanguage(e.target.value)}
+            className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-700 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer h-[44px] shadow-inner"
           >
-            <option value="English">English</option>
-            <option value="Devanagari">Devanagari</option>
+            <option value="English">EN</option>
+            <option value="Devanagari">हिन्दी</option>
           </select>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-semibold text-gray-700 mb-1">Audio language</label>
+        {/* 3. Audio Voice Selector Vector (Spans 5 columns on mobile, 2 columns on large screens) */}
+        <div className="flex flex-col col-span-5 sm:col-span-5 md:col-span-2">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5 truncate">
+            Voice Guide
+          </label>
           <select
-            value={audioLanguage}
-            onChange={(e) => setAudioLanguage(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
+            value={audioLanguage || "English"}
+            onChange={(e) => setAudioLanguage && setAudioLanguage(e.target.value)}
+            className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-700 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer h-[44px] shadow-inner"
           >
-            <option value="English">English</option>
-            <option value="Devanagari">Devanagari</option>
+            <option value="English">EN Voice</option>
+            <option value="Devanagari">HI Voice</option>
           </select>
         </div>
 
-        <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium h-[42px]"
-        >
-          {isMuted ? '🔇 Unmute' : '🔊 Mute'}
-        </button>
+        {/* 4. MINIMALIST MUTE SYMBOL BUTTON (Spans 2 columns on mobile, 2 columns on large) */}
+        <div className="col-span-2 sm:col-span-3 md:col-span-2">
+          <button
+            type="button"
+            onClick={() => setIsMuted && setIsMuted(!isMuted)}
+            className={`w-full flex items-center justify-center rounded-xl font-black text-lg border h-[44px] transition-all cursor-pointer shadow-sm ${
+              isMuted 
+                ? 'bg-rose-50 border-rose-200 hover:bg-rose-100 scale-95 opacity-80' 
+                : 'bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+            }`}
+            title={isMuted ? "Unmute Practice Audio" : "Mute Practice Audio"}
+          >
+            {/* Renders solely as a clean, responsive status layout emoji symbol */}
+            <span className="transform active:scale-75 transition-transform duration-100">
+              {isMuted ? '🔇' : '🔊'}
+            </span>
+          </button>
+        </div>
+
       </div>
     </div>
   );

@@ -1,7 +1,10 @@
-// src/data/routines.js
-import { stepDatabase } from './stepNames';
+/**
+ * @file src/data/routines.js
+ * @description Master Playlist Factory with bulletproof auto-side expansion mapping filters.
+ */
 
-// 1. THE MASTER DATABASE (Simple configuration)
+import { stepDatabase } from './stepNamesv7';
+
 const masterRoutinesConfig = [
   {
     id: "patanjaliJogging1",
@@ -142,39 +145,44 @@ const masterRoutinesConfig = [
   }
 ];
 
-// 2. THE DYNAMIC LOOP (Builds the complex data for the UI)
 export const routines = masterRoutinesConfig.map(routine => {
+  const expandedSteps = [];
+  let trackingIndex = 1;
+
+  routine.stepKeys.forEach((key) => {
+    const stepData = stepDatabase ? stepDatabase[key] : null;
+    if (!stepData) return;
+
+    const makeStepItem = (sideSuffix = "", sideLabelHi = "", sideLabelEn = "") => ({
+      id: `${routine.id}-step-${trackingIndex++}`,
+      stepKey: key,
+      ...stepData,
+      pictureUrl: stepData.pictureUrl || `/assets/images/${key}.jpg`,
+      sideIndicator: sideLabelEn,
+      names: {
+        devanagari: `${stepData.names?.devanagari || ''} ${sideLabelHi}`.trim(),
+        roman: `${stepData.names?.roman || ''} ${sideLabelEn}`.trim(),
+        english: `${stepData.names?.english || ''} ${sideLabelEn ? `(${sideLabelEn})` : ''}`.trim()
+      },
+      speech: {
+        hi: `${stepData.names?.devanagari || ''} ${sideLabelHi} प्रारंभ करें।`,
+        en: `Begin ${stepData.names?.roman || ''} ${sideLabelEn}.`
+      }
+    });
+
+    if (stepData.hasSides) {
+      expandedSteps.push(makeStepItem("-left", "(बायाँ भाग)", "Left Side"));
+      expandedSteps.push(makeStepItem("-right", "(दायाँ भाग)", "Right Side"));
+    } else {
+      expandedSteps.push(makeStepItem("", "", ""));
+    }
+  });
+
   return {
     id: routine.id,
     label: routine.label,
     description: routine.description,
     safetyNote: routine.safetyNote,
-    
-    // The loop that translates your simple list into full objects
-    steps: routine.stepKeys.map((key, index) => {
-      const stepData = stepDatabase[key];
-      
-      // Safety check: if a key is mistyped, warn the developer
-      if (!stepData) {
-        console.error(`Missing step in database: ${key}`);
-        return null;
-      }
-
-      return {
-        id: `${routine.id}-step-${index + 1}`, // Auto-generates IDs like "patanjaliJogging1-step-1"
-        stepKey: key,
-        ...stepData, // Inherits time, reps, cautions, etc.
-        
-        // Automated Image Library Mapping
-        // This tells the app to automatically look in the public folder for a .jpg matching the step's key
-        pictureUrl: `/assets/images/${key}.jpg`,
-        
-        // Auto-generates safe, default speech prompts based on the names in the database
-        speech: {
-          hi: `${stepData.names.devanagari} प्रारंभ करें।`,
-          en: `Begin ${stepData.names.roman}.`
-        }
-      };
-    }).filter(Boolean) // removes any nulls if there was a typo
+    steps: expandedSteps
   };
 });

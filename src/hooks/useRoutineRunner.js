@@ -1,3 +1,10 @@
+/**
+ * @file src/hooks/useRoutineRunner.js
+ * @description State engine for the Lata Yog application framework.
+ * Restores manual-start pause gates on initial step loads while preserving 
+ * automated repetition counters and final class termination milestone flags.
+ */
+
 import { useState, useEffect, useMemo } from 'react';
 import { routines } from '../data/routines';
 
@@ -6,9 +13,10 @@ const useRoutineRunner = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [timerStatus, setTimerStatus] = useState('idle'); // idle, running, paused
   const [timeLeft, setTimeLeft] = useState(0);
-  const [isPreparing, setIsPreparing] = useState(false); // NEW V7 STATE
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [isRoutineComplete, setIsRoutineComplete] = useState(false);
 
-  // Safety Fallback: Automatically select the first routine if empty
+  // Safety Fallback: Automatically load primary routine array contents if empty
   useEffect(() => {
     if (!selectedRoutineId && routines.length > 0) {
       setSelectedRoutineId(routines[0].id);
@@ -22,63 +30,83 @@ const useRoutineRunner = () => {
   const steps = currentRoutine?.steps || [];
   const currentStep = steps[currentStepIndex];
 
-  // Calculate Initial Time: Check for prepTime first, then fallback to duration/reps
+  // Dynamic Time Loader with absolute type guards to prevent NaN injection
   useEffect(() => {
-    if (currentStep) {
-      const prep = currentStep.prepTime || 0;
+    if (currentStep && !isRoutineComplete) {
+      const prep = typeof currentStep.prepTime === 'number' ? currentStep.prepTime : 5;
+      const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
+      const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
+      const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
+
       if (prep > 0) {
         setIsPreparing(true);
         setTimeLeft(prep);
       } else {
         setIsPreparing(false);
-        const timePerRep = currentStep.timePerRep || 5; 
-        setTimeLeft(currentStep.type === 'time' ? currentStep.duration : currentStep.reps * timePerRep);
+        setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
       }
+    } else {
+      setTimeLeft(0);
+      setIsPreparing(false);
     }
-  }, [currentStepIndex, currentStep]);
+  }, [currentStepIndex, selectedRoutineId, isRoutineComplete]);
 
-  // The Main Engine Loop
+  // Main Core Chronos Engine Loop
   useEffect(() => {
     let interval = null;
     
     if (timerStatus === 'running' && timeLeft > 0) {
       interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
     } else if (timerStatus === 'running' && timeLeft === 0) {
-      
-      // LOGIC GATE: Are we finishing Prep Time or the actual Exercise?
       if (isPreparing) {
-        // Prep time is over, start the actual exercise timer
         setIsPreparing(false);
         if (currentStep) {
-          const timePerRep = currentStep.timePerRep || 5; 
-          setTimeLeft(currentStep.type === 'time' ? currentStep.duration : currentStep.reps * timePerRep);
+          const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
+          const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
+          const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
+          setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
         }
       } else {
-        // Main exercise is over
-        if (currentStep && currentStep.type === 'time') {
-           completeAndNext();
-        } else {
-           setTimerStatus('paused'); // Wait for manual confirmation on Rep exercises
-        }
+        completeAndNext();
       }
     }
     return () => clearInterval(interval);
-  }, [timerStatus, timeLeft, currentStep, isPreparing]); // Re-run if isPreparing changes
+  }, [timerStatus, timeLeft, currentStep, isPreparing]);
+
+  /**
+   * CALCULATED UX READING: Computes current active repetition index
+   */
+  const repTelemetry = useMemo(() => {
+    if (!currentStep || currentStep.type !== 'reps' || isPreparing || isRoutineComplete) {
+      return { currentRep: 0, totalReps: 0, repsLeft: 0 };
+    }
+    const totalReps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
+    const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
+    
+    const repsLeft = Math.ceil(timeLeft / timePerRep);
+    const currentRep = Math.max(1, totalReps - repsLeft + 1);
+    
+    return { currentRep, totalReps, repsLeft };
+  }, [currentStep, timeLeft, isPreparing, isRoutineComplete]);
 
   const startTimer = () => setTimerStatus('running');
   const pauseTimer = () => setTimerStatus('paused');
   
   const resetTimer = () => {
     setTimerStatus('idle');
+    setIsRoutineComplete(false);
     if (currentStep) {
-      const prep = currentStep.prepTime || 0;
+      const prep = typeof currentStep.prepTime === 'number' ? currentStep.prepTime : 5;
+      const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
+      const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
+      const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
+
       if (prep > 0) {
         setIsPreparing(true);
         setTimeLeft(prep);
       } else {
         setIsPreparing(false);
-        const timePerRep = currentStep.timePerRep || 5;
-        setTimeLeft(currentStep.type === 'time' ? currentStep.duration : currentStep.reps * timePerRep);
+        setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
       }
     }
   };
@@ -86,14 +114,16 @@ const useRoutineRunner = () => {
   const completeAndNext = () => {
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
-      setTimerStatus('running'); // Auto-play the next step (which will trigger prepTime)
+      setTimerStatus('running'); // Forces automatic play on subsequent step handoffs
     } else {
-      setTimerStatus('idle'); // Routine Complete
+      setTimerStatus('idle');
+      setIsRoutineComplete(true);
     }
   };
 
   const prevStep = () => {
     if (currentStepIndex > 0) {
+      setIsRoutineComplete(false);
       setCurrentStepIndex(prev => prev - 1);
       setTimerStatus('running');
     }
@@ -102,7 +132,8 @@ const useRoutineRunner = () => {
   const selectRoutine = (routineId) => {
     setSelectedRoutineId(routineId);
     setCurrentStepIndex(0);
-    setTimerStatus('idle');
+    setIsRoutineComplete(false);
+    setTimerStatus('idle'); // RE-RESTORED GATEWAY: Initial loaded or swapped routine waits for user to click Start
   };
 
   return {
@@ -114,7 +145,9 @@ const useRoutineRunner = () => {
     currentStepIndex,
     timerStatus,
     timeLeft,
-    isPreparing, // Exported to UI so the app knows we are in a transition
+    isPreparing, 
+    isRoutineComplete,
+    repTelemetry,
     startTimer,
     pauseTimer,
     resetTimer,
