@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Image as ImageIcon, Video, Volume2, VolumeX } from 'lucide-react';
-import { routines } from './data/routines';
+import { routines } from '../routines';
 import ControlsPanel from './components/ControlsPanel';
 import RoutineStepList from './components/RoutineStepList';
-import { playAudioPrompt } from './lib/audio';
+import { playAudioPrompt } from '../../lib/audio';
 
 export default function App() {
   const [currentRoutine, setCurrentRoutine] = useState(routines[0]);

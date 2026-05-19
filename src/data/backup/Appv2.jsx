@@ -6,11 +6,11 @@
  */
 
 import React, { useState } from 'react';
-import SettingsCard from './components/SettingsCard';
-import CurrentActivityCard from './components/CurrentActivityCard';
-import SessionControlsCard from './components/SessionControlsCard';
-import RoutinePlaylistCard from './components/RoutinePlaylistCard';
-import useRoutineRunner from './hooks/useRoutineRunner';
+import SettingsCard from '../../components/SettingsCard';
+import CurrentActivityCard from '../../components/CurrentActivityCard';
+import SessionControlsCard from '../../components/SessionControlsCard';
+import RoutinePlaylistCard from '../../components/RoutinePlaylistCard';
+import useRoutineRunner from '../../hooks/useRoutineRunner';
 
 const App = () => {
   // Shared localization states for application context mapping
