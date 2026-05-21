@@ -24,3 +24,26 @@ For any step with `hasSides: true`, the app should move:
 
 ```text
 Left Side → Right Side → Next Exercise
+
+
+---
+
+## 3. Optional small update to `docs/BUG_BACKLOG.md`
+
+Add this at the bottom:
+
+```markdown
+---
+
+## Future Validation Improvements
+
+The data validation script should eventually detect:
+
+```text
+unused step definitions
+duplicate names across languages
+missing media fallback
+invalid picture/video paths
+internalSteps consistency
+side-step progression risks
+missing breathing metadata for pranayama steps
