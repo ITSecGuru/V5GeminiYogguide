@@ -1,0 +1,12 @@
+# 1. Go to stable working baseline
+git checkout v7-transition-engine
+
+# 2. Get latest remote changes
+git pull origin v7-transition-engine
+
+# 3. Create a new feature/test branch
+git checkout -b feature/v8-example-change
+
+# 4. Confirm you are on the new branch
+git branch --show-current
+git status
