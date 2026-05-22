@@ -2,12 +2,12 @@ name: CI
 
 on:
   pull_request:
-    branches: [ dev, vercel, main ]
+    branches: [ v7-transition-engine ]
     paths-ignore:
       - '.devcontainer/**'
       - '.github/**'
   push:
-    branches: [ dev, vercel, main ]
+    branches: [ v7-transition-engine, feature/v8-data-validation-and-docs ]
     paths-ignore:
       - '.devcontainer/**'
       - '.github/**'
@@ -16,18 +16,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install
+
+      - name: Install dependencies
         run: npm ci
+
       - name: Lint
         run: npm run lint --if-present
+
       - name: Test
         run: npm test --if-present
+
       - name: Build
         run: npm run build
-
