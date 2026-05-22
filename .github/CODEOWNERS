@@ -1,1 +1,9 @@
+#Replace @your-org/frontend-team and @your-org/infra-team with the actual GitHub usernames or teams you want to request.
+# Auto-request frontend reviewers for src changes
+#/src/ @your-org/frontend-team
+/src/ @/Yogsadhak
+
+# Infra and workflows
+#/.github/ @your-org/infra-team
+/.github/ @Yogsadhak
 
