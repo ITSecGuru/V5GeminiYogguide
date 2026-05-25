@@ -5,13 +5,14 @@
  * and global multilingual display parameters directly down into presentation panels.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Award, RefreshCw, Sparkles, Compass } from 'lucide-react';
 import SettingsCard from './components/SettingsCard';
 import CurrentActivityCard from './components/CurrentActivityCard';
 import SessionControlsCard from './components/SessionControlsCard';
 import RoutinePlaylistCard from './components/RoutinePlaylistCard';
 import useRoutineRunner from './hooks/useRoutineRunner';
+import { playAudioPrompt } from './lib/audio';
 
 const App = () => {
   // Shared state parameters for system localization vectors
@@ -38,6 +39,18 @@ const App = () => {
     completeAndNext, 
     prevStep 
   } = useRoutineRunner();
+
+  // Play audio prompt when a new step becomes active (respecting mute and voice selection)
+  useEffect(() => {
+    if (!currentStep) return;
+    if (isMuted) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      return;
+    }
+
+    const langCode = audioLanguage === 'Devanagari' ? 'hi' : 'en';
+    playAudioPrompt(currentStep, langCode, false);
+  }, [currentStepIndex, audioLanguage, isMuted, currentStep]);
 
   // Handle inner template translations for the final celebration panel
   const isHindi = uiLanguage === "Devanagari";

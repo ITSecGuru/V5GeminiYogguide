@@ -10,7 +10,11 @@ import { AlertTriangle, Clock } from 'lucide-react';
 const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => { 
   if (!currentStep) return null;
 
-  const imageSrc = currentStep.pictureUrl || `/assets/images/${currentStep.id}.jpg`;
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const fallbackSrc = new URL('../../assets/images/default.jpg', import.meta.url).href;
+  const imageSrc = currentStep.pictureUrl && currentStep.pictureUrl.trim() !== ""
+    ? (currentStep.pictureUrl.startsWith('/') ? `${baseUrl.replace(/\/$/, '')}${currentStep.pictureUrl}` : currentStep.pictureUrl)
+    : `${baseUrl}assets/images/${currentStep.id}.jpg`;
   const hasVideo = currentStep.videoUrl && currentStep.videoUrl.trim() !== "";
   const isRepsType = currentStep.type === 'reps';
   const isHindi = uiLanguage === "Devanagari";
@@ -39,7 +43,13 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
               src={imageSrc}
               alt={currentStep.names?.english || "Yoga Pose"}
               className="w-full h-full object-cover"
-              onError={(e) => { e.target.src = '/assets/images/default.jpg' }}
+              onError={(e) => {
+                const target = e.target;
+                if (target instanceof HTMLImageElement) {
+                  target.onerror = null;
+                  target.src = fallbackSrc;
+                }
+              }}
             />
           </div>
         )}
