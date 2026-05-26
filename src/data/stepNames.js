@@ -28,7 +28,7 @@ export const stepDatabase = {
     names: { devanagari: "प्रार्थना", roman: "Prarthana", english: "Prayer" },
     category: "Warm Up",
     type: "time", 
-    duration: 60, 
+    duration: 20, 
     reps: null, 
     timePerRep: null, 
     prepTime: 5,        // Gives practitioner 5 seconds to center themselves
@@ -44,19 +44,19 @@ export const stepDatabase = {
   "yogic-jogging-position-1": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 1", roman: "Yogic Jogging Sthiti 1", english: "Yogic Jogging Position 1" },
     category: "Warm Up",
-    type: "time", duration: 60, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     caution: "Do not hyperextend the knees.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-2": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 2", roman: "Yogic Jogging Sthiti 2", english: "Yogic Jogging Position 2" },
     category: "Warm Up",
-    type: "time", duration: 60, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-3": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 3", roman: "Yogic Jogging Sthiti 3", english: "Yogic Jogging Position 3" },
     category: "Warm Up",
-    type: "time", duration: 60, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 10, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-4": { 

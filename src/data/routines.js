@@ -1,6 +1,6 @@
 /**
  * @file src/data/routines.js
- * @description Master Playlist Factory with bulletproof auto-side expansion mapping filters.
+ * @description Master Playlist Factory with bulletproof auto-side expansion mapping filters for V8.1.
  */
 
 import { stepDatabase } from './stepNames';
@@ -151,7 +151,12 @@ export const routines = masterRoutinesConfig.map(routine => {
 
   routine.stepKeys.forEach((key) => {
     const stepData = stepDatabase ? stepDatabase[key] : null;
-    if (!stepData) return;
+    if (!stepData) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`Routine '${routine.id}' references missing step key '${key}'. Check stepNames.js for typos or removed keys.`);
+      }
+      return;
+    }
 
     const makeStepItem = (sideSuffix = "", sideLabelHi = "", sideLabelEn = "") => ({
       id: `${routine.id}-step-${trackingIndex++}`,

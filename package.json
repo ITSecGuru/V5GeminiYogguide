@@ -1,11 +1,11 @@
 {
   "name": "lata-yog-app",
   "private": true,
-  "version": "6.1.0",
+  "version": "8.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "VITE_TTS_DEBUG=true vite",
+    "build": "VITE_TTS_DEBUG=true vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "validate:data": "node scripts/validateStepNames.js",

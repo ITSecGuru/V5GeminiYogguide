@@ -1,6 +1,6 @@
 /**
  * @file src/components/SettingsCard.jsx
- * @description Enhanced configuration panel layout for Lata Yog Guide V7.3.
+ * @description Enhanced configuration panel layout for Lata Yog Guide V8.1.
  * Expands the routine selector component width dynamically to prevent text 
  * truncation, and minifies audio controls down to a clean status symbol block.
  */
@@ -21,16 +21,6 @@ export default function SettingsCard({
   return (
     <div className="w-full bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100">
       
-      {/* Dynamic Selector Header Panel */}
-      <div className="mb-3.5">
-        <h2 className="text-md font-bold text-slate-900 uppercase tracking-tight">
-          Practice Control Deck
-        </h2>
-        <p className="text-xs text-slate-400 font-medium mt-0.5">
-          Choose your dynamic flow itinerary and control active system audio loops.
-        </p>
-      </div>
-
       {/* PROMINENT CONFIGURATION MATRIX LAYOUT
           Uses flexible responsive spans to make the routine bar much wider and prominent */}
       <div className="grid grid-cols-12 gap-3 items-end">
@@ -83,7 +73,7 @@ export default function SettingsCard({
             className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-700 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer h-[44px] shadow-inner"
           >
             <option value="English">EN Voice</option>
-            <option value="Devanagari">HI Voice</option>
+            <option value="Devanagari">Sanskrit / Devanagari Voice</option>
           </select>
         </div>
 

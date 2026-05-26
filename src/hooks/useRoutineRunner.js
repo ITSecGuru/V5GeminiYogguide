@@ -5,7 +5,7 @@
  * automated repetition counters and final class termination milestone flags.
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { routines } from '../data/routines';
 
 const useRoutineRunner = () => {
@@ -15,6 +15,7 @@ const useRoutineRunner = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isRoutineComplete, setIsRoutineComplete] = useState(false);
+  const nextStepPrepared = useRef(false);
 
   // Safety Fallback: Automatically load primary routine array contents if empty
   useEffect(() => {
@@ -32,6 +33,8 @@ const useRoutineRunner = () => {
 
   // Dynamic Time Loader with absolute type guards to prevent NaN injection
   useEffect(() => {
+    nextStepPrepared.current = false;
+
     if (currentStep && !isRoutineComplete) {
       const prep = typeof currentStep.prepTime === 'number' ? currentStep.prepTime : 5;
       const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
@@ -45,16 +48,23 @@ const useRoutineRunner = () => {
         setIsPreparing(false);
         setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
       }
+
+      nextStepPrepared.current = true;
     } else {
       setTimeLeft(0);
       setIsPreparing(false);
+      nextStepPrepared.current = false;
     }
   }, [currentStepIndex, selectedRoutineId, isRoutineComplete]);
 
   // Main Core Chronos Engine Loop
   useEffect(() => {
     let interval = null;
-    
+
+    if (timerStatus === 'running' && !nextStepPrepared.current) {
+      return;
+    }
+
     if (timerStatus === 'running' && timeLeft > 0) {
       interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
     } else if (timerStatus === 'running' && timeLeft === 0) {
@@ -67,6 +77,7 @@ const useRoutineRunner = () => {
           setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
         }
       } else {
+        nextStepPrepared.current = false;
         completeAndNext();
       }
     }

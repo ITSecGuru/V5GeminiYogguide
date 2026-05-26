@@ -1,6 +1,6 @@
 /**
  * @file src/App.jsx
- * @description Master framework layout layer for Lata Yog Guide V7.3.
+ * @description Master framework layout layer for Lata Yog Guide V8.1.
  * Pipes real-time repetition telemetry, step transition countdown states,
  * and global multilingual display parameters directly down into presentation panels.
  */
@@ -19,6 +19,8 @@ const App = () => {
   const [uiLanguage, setUiLanguage] = useState("English");
   const [audioLanguage, setAudioLanguage] = useState("English");
   const [isMuted, setIsMuted] = useState(false);
+  const [ttsStatus, setTtsStatus] = useState('unknown');
+  const debugMode = import.meta.env.VITE_TTS_DEBUG === 'true' || import.meta.env.VITE_TTS_DEBUG === true;
 
   // Extract advanced dynamic practice metrics and final lifecycle milestones
   const { 
@@ -52,6 +54,21 @@ const App = () => {
     playAudioPrompt(currentStep, langCode, false);
   }, [currentStepIndex, audioLanguage, isMuted, currentStep]);
 
+  // Show a small TTS status indicator when the debug build is active
+  useEffect(() => {
+    if (!debugMode || typeof window === 'undefined') return;
+
+    const initialStatus = window.__externalTtsActive ? 'external' : 'browser';
+    setTtsStatus(initialStatus);
+
+    const handleStatus = (e) => {
+      setTtsStatus(e.detail?.external ? 'external' : 'browser');
+    };
+
+    window.addEventListener('tts-status-changed', handleStatus);
+    return () => window.removeEventListener('tts-status-changed', handleStatus);
+  }, [debugMode]);
+
   // Handle inner template translations for the final celebration panel
   const isHindi = uiLanguage === "Devanagari";
 
@@ -60,13 +77,10 @@ const App = () => {
       <div className="max-w-6xl mx-auto">
         
         {/* Application Header Title Bar */}
-        <header className="mb-5 border-b border-slate-200 pb-3">
+        <header className="mb-5 pb-3">
           <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Lata Yog Guide <span className="text-blue-600 font-black">V7.3</span>
+            Lata Yog Guide
           </h1>
-          <p className="text-slate-500 mt-1 text-sm md:text-base font-medium">
-            Your interactive, continuous data-driven daily practice.
-          </p>
         </header>
 
         {/* Master Responsive Grid Matrix Layout */}
@@ -180,6 +194,14 @@ const App = () => {
             />
           </div>
 
+        </div>
+      </div>
+      <div className="fixed bottom-3 right-3 z-50 select-none pointer-events-none">
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+          <span className="font-semibold">v8.1</span>
+          {debugMode && (
+            <span className="text-slate-500">TTS: {ttsStatus === 'external' ? 'External' : ttsStatus === 'browser' ? 'Browser' : 'Unknown'}</span>
+          )}
         </div>
       </div>
     </div>
