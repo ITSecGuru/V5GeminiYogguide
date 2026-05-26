@@ -16,6 +16,7 @@ const useRoutineRunner = () => {
   const [isPreparing, setIsPreparing] = useState(false);
   const [isRoutineComplete, setIsRoutineComplete] = useState(false);
   const nextStepPrepared = useRef(false);
+  const stepAdvanceLock = useRef(false);
 
   // Safety Fallback: Automatically load primary routine array contents if empty
   useEffect(() => {
@@ -61,9 +62,10 @@ const useRoutineRunner = () => {
   useEffect(() => {
     let interval = null;
 
-    if (timerStatus === 'running' && !nextStepPrepared.current) {
-      return;
-    }
+    // Allow the timer loop to evaluate regardless of nextStepPrepared; rely
+    // on `isAdvancingRef` and proper timeLeft initialization to avoid
+    // duplicate advances. The previous early-return could prevent the
+    // interval from starting after an auto-advance, leaving the UI stuck.
 
     if (timerStatus === 'running' && timeLeft > 0) {
       interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
@@ -78,7 +80,7 @@ const useRoutineRunner = () => {
         }
       } else {
         nextStepPrepared.current = false;
-        completeAndNext();
+        completeAndNext({ source: 'auto' });
       }
     }
     return () => clearInterval(interval);
@@ -122,7 +124,15 @@ const useRoutineRunner = () => {
     }
   };
 
-  const completeAndNext = () => {
+  const completeAndNext = ({ source = 'manual' } = {}) => {
+    // If this advance was triggered by automatic time expiry, apply a short
+    // lock to prevent duplicate auto-invocations from racing and skipping steps.
+    if (source === 'auto') {
+      if (stepAdvanceLock.current) return;
+      stepAdvanceLock.current = true;
+      setTimeout(() => { stepAdvanceLock.current = false; }, 350);
+    }
+
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
       setTimerStatus('running'); // Forces automatic play on subsequent step handoffs
