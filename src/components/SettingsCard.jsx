@@ -65,15 +65,15 @@ export default function SettingsCard({
         {/* 3. Audio Voice Selector Vector (Spans 5 columns on mobile, 2 columns on large screens) */}
         <div className="flex flex-col col-span-5 sm:col-span-5 md:col-span-2">
           <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5 truncate">
-            Voice Guide
+            Audio Guidance
           </label>
           <select
             value={audioLanguage || "English"}
             onChange={(e) => setAudioLanguage && setAudioLanguage(e.target.value)}
             className="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-700 text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all cursor-pointer h-[44px] shadow-inner"
           >
-            <option value="English">EN Voice</option>
-            <option value="Devanagari">Sanskrit / Devanagari Voice</option>
+            <option value="English">English (Browser TTS)</option>
+            <option value="Devanagari">Devanagari (Sanskrit)</option>
           </select>
         </div>
 
