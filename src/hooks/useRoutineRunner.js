@@ -17,6 +17,7 @@ const useRoutineRunner = () => {
   const [isRoutineComplete, setIsRoutineComplete] = useState(false);
   const nextStepPrepared = useRef(false);
   const stepAdvanceLock = useRef(false);
+  const firstStepAutoStarted = useRef(false);
 
   // Safety Fallback: Automatically load primary routine array contents if empty
   useEffect(() => {
@@ -42,7 +43,14 @@ const useRoutineRunner = () => {
       const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
       const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
 
-      if (prep > 0) {
+      if (currentStepIndex === 0 && !firstStepAutoStarted.current) {
+        // Auto-start the first step with a visible 10-second countdown so mobile
+        // users don't miss the hidden start control on initial launch.
+        setIsPreparing(true);
+        setTimeLeft(10);
+        setTimerStatus('running');
+        firstStepAutoStarted.current = true;
+      } else if (prep > 0) {
         setIsPreparing(true);
         setTimeLeft(prep);
       } else {
@@ -154,7 +162,8 @@ const useRoutineRunner = () => {
     setSelectedRoutineId(routineId);
     setCurrentStepIndex(0);
     setIsRoutineComplete(false);
-    setTimerStatus('idle'); // RE-RESTORED GATEWAY: Initial loaded or swapped routine waits for user to click Start
+    setTimerStatus('idle'); // Initial loaded or swapped routine waits for user to click Start
+    firstStepAutoStarted.current = false;
   };
 
   return {
