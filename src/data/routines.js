@@ -162,7 +162,7 @@ export const routines = masterRoutinesConfig.map(routine => {
       id: `${routine.id}-step-${trackingIndex++}`,
       stepKey: key,
       ...stepData,
-      pictureUrl: stepData.pictureUrl || `/assets/images/${key}.jpg`,
+      pictureUrl: stepData.pictureUrl || "",
       sideIndicator: sideLabelEn,
       names: {
         devanagari: `${stepData.names?.devanagari || ''} ${sideLabelHi}`.trim(),

@@ -12,9 +12,10 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
 
   const baseUrl = import.meta.env.BASE_URL || '/';
   const fallbackSrc = new URL('../../assets/images/default.jpg', import.meta.url).href;
+  const defaultImageBase = `${baseUrl}assets/images/${currentStep.stepKey || currentStep.id}`;
   const imageSrc = currentStep.pictureUrl && currentStep.pictureUrl.trim() !== ""
     ? (currentStep.pictureUrl.startsWith('/') ? `${baseUrl.replace(/\/$/, '')}${currentStep.pictureUrl}` : currentStep.pictureUrl)
-    : `${baseUrl}assets/images/${currentStep.id}.jpg`;
+    : `${defaultImageBase}.gif`;
   const hasVideo = currentStep.videoUrl && currentStep.videoUrl.trim() !== "";
   const isRepsType = currentStep.type === 'reps';
   const isHindi = uiLanguage === "Devanagari";
@@ -47,7 +48,11 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
                 const target = e.target;
                 if (target instanceof HTMLImageElement) {
                   target.onerror = null;
-                  target.src = fallbackSrc;
+                  if (target.src.endsWith('.gif')) {
+                    target.src = `${defaultImageBase}.jpg`;
+                  } else {
+                    target.src = fallbackSrc;
+                  }
                 }
               }}
             />
