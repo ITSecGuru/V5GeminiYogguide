@@ -11,7 +11,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
   if (!currentStep) return null;
 
   const baseUrl = import.meta.env.BASE_URL || '/';
-  const fallbackSrc = new URL('../../assets/images/default.jpg', import.meta.url).href;
+  const fallbackSrc = `${baseUrl}assets/images/default.jpg`;
   const defaultImageBase = `${baseUrl}assets/images/${currentStep.stepKey || currentStep.id}`;
   const imageSrc = currentStep.pictureUrl && currentStep.pictureUrl.trim() !== ""
     ? (currentStep.pictureUrl.startsWith('/') ? `${baseUrl.replace(/\/$/, '')}${currentStep.pictureUrl}` : currentStep.pictureUrl)
