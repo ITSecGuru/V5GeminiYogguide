@@ -33,15 +33,27 @@ const useRoutineRunner = () => {
   const steps = currentRoutine?.steps || [];
   const currentStep = steps[currentStepIndex];
 
+  const getStepDuration = (step) => {
+    if (!step) return 60;
+    if (step.type === 'time') {
+      return typeof step.duration === 'number' ? step.duration : 60;
+    }
+
+    const reps = typeof step.reps === 'number' ? step.reps : 1;
+    const defaultTimePerRep = step.type === 'sequence' ? 15 : 5;
+    const timePerRep = typeof step.timePerRep === 'number' ? step.timePerRep : defaultTimePerRep;
+
+    return reps * timePerRep;
+  };
+
+  const currentStepDuration = getStepDuration(currentStep);
+
   // Dynamic Time Loader with absolute type guards to prevent NaN injection
   useEffect(() => {
     nextStepPrepared.current = false;
 
     if (currentStep && !isRoutineComplete) {
       const prep = typeof currentStep.prepTime === 'number' ? currentStep.prepTime : 5;
-      const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
-      const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
-      const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
 
       if (currentStepIndex === 0 && !firstStepAutoStarted.current) {
         // Auto-start the first step with a visible 10-second countdown so mobile
@@ -55,7 +67,7 @@ const useRoutineRunner = () => {
         setTimeLeft(prep);
       } else {
         setIsPreparing(false);
-        setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
+        setTimeLeft(currentStepDuration);
       }
 
       nextStepPrepared.current = true;
@@ -64,7 +76,7 @@ const useRoutineRunner = () => {
       setIsPreparing(false);
       nextStepPrepared.current = false;
     }
-  }, [currentStepIndex, selectedRoutineId, isRoutineComplete]);
+  }, [currentStepIndex, selectedRoutineId, isRoutineComplete, currentStepDuration]);
 
   // Main Core Chronos Engine Loop
   useEffect(() => {
@@ -98,15 +110,16 @@ const useRoutineRunner = () => {
    * CALCULATED UX READING: Computes current active repetition index
    */
   const repTelemetry = useMemo(() => {
-    if (!currentStep || currentStep.type !== 'reps' || isPreparing || isRoutineComplete) {
+    if (!currentStep || isPreparing || isRoutineComplete || !['reps', 'sequence'].includes(currentStep.type)) {
       return { currentRep: 0, totalReps: 0, repsLeft: 0 };
     }
+
     const totalReps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
-    const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
-    
-    const repsLeft = Math.ceil(timeLeft / timePerRep);
+    const defaultTimePerRep = currentStep.type === 'sequence' ? 15 : 5;
+    const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : defaultTimePerRep;
+    const repsLeft = Math.max(0, Math.ceil(timeLeft / timePerRep));
     const currentRep = Math.max(1, totalReps - repsLeft + 1);
-    
+
     return { currentRep, totalReps, repsLeft };
   }, [currentStep, timeLeft, isPreparing, isRoutineComplete]);
 
@@ -118,16 +131,14 @@ const useRoutineRunner = () => {
     setIsRoutineComplete(false);
     if (currentStep) {
       const prep = typeof currentStep.prepTime === 'number' ? currentStep.prepTime : 5;
-      const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
-      const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
-      const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
+      const time = getStepDuration(currentStep);
 
       if (prep > 0) {
         setIsPreparing(true);
         setTimeLeft(prep);
       } else {
         setIsPreparing(false);
-        setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
+        setTimeLeft(time);
       }
     }
   };
@@ -175,9 +186,10 @@ const useRoutineRunner = () => {
     currentStepIndex,
     timerStatus,
     timeLeft,
-    isPreparing, 
+    isPreparing,
     isRoutineComplete,
     repTelemetry,
+    currentStepDuration,
     startTimer,
     pauseTimer,
     resetTimer,

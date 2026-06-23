@@ -13,6 +13,17 @@
  * @field prepTime (Num)    - Transition timer in seconds before the main exercise timer begins.
  * @field hasSides (Bool)   - True if the pose must be performed on the left, then repeated on the right.
  * @field breathPattern (Str)- On-screen/Audio instructions for breathing (e.g., "Inhale up, exhale down").
+ * @field pranayamSteps (Array) - (Optional) Structured breathing metadata for Pranayama steps.
+ *    Each array item is a substep (max 8) with the following shape:
+ *      {
+ *        names: { english: String, devanagari: String, transliteration: String },
+ *        action: 'inhale' | 'exhale' | 'hold',
+ *        duration: Number (seconds)
+ *      }
+ *    The UI may use this to compute `breathCycleDuration`, show per-substep labels,
+ *    and drive animation timing. Use `breathAnimationKey` to select animation styling.
+ * @field breathAnimationKey (Str) - (Optional) visual animation identifier (e.g., 'anulom-vilom').
+ * @field breathCycleDuration (Number) - (Optional) total seconds for one full pranayam cycle.
  * @field benefits (Str)    - Physiological/Mental benefits to be read via Text-to-Speech during long holds.
  * @field caution (String)  - Safety warnings. If populated, renders an amber alert box in the UI.
  * @field audioUrl (String) - Placeholder for custom motivational MP3s.
@@ -188,8 +199,22 @@ export const stepDatabase = {
   "anulom-vilom": { 
     names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom", english: "Alternate Nostril Breathing" },
     category: "Pranayama",
-    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
-    caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Cycle: Purak (inhale), Rechak (exhale), Purak (inhale), Rechak (exhale).",
+    breathAnimationKey: "anulom-vilom",
+    breathCycleDuration: 24,
+    pranayamSteps: [
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 },
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 }
+    ],
+    recommendedCycles: 40,
+    benefits: "",
+    caution: "",
+    audioUrl: "",
+    videoUrl: "",
+    pictureUrl: "" 
   },
   "bahya-pranayama": { 
     names: { devanagari: "बाह्य प्राणायाम", roman: "Bahya Pranayam", english: "External Breath Retention" },

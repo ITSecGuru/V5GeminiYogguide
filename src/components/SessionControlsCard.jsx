@@ -14,6 +14,7 @@ export default function SessionControlsCard({
   timeLeft,
   isPreparing,
   repTelemetry, // Pulling dynamic tracking analytics from engine hook
+  currentStepDuration,
   startTimer,
   pauseTimer,
   resetTimer,
@@ -26,11 +27,13 @@ export default function SessionControlsCard({
   const getMaxDuration = () => {
     if (!currentStep) return 60;
     if (currentStep.type === 'time') return currentStep.duration || 60;
-    const timePerRep = currentStep.timePerRep || 5;
+    const timePerRep = typeof currentStep.timePerRep === 'number'
+      ? currentStep.timePerRep
+      : currentStep.type === 'sequence' ? 15 : 5;
     return (currentStep.reps || 16) * timePerRep;
   };
 
-  const maxDuration = getMaxDuration();
+  const maxDuration = currentStepDuration || getMaxDuration();
   const progressPercent = maxDuration > 0 ? ((maxDuration - timeLeft) / maxDuration) * 100 : 0;
   const overallProgressPercent = totalSteps > 0 ? ((currentStepIndex) / totalSteps) * 100 : 0;
 
@@ -49,6 +52,7 @@ export default function SessionControlsCard({
   };
 
   const isRepsType = currentStep?.type === 'reps' && !isPreparing;
+  const isSequenceType = currentStep?.type === 'sequence' && !isPreparing;
 
   return (
     <div className="w-full bg-white p-3 md:p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3">
@@ -63,6 +67,10 @@ export default function SessionControlsCard({
             {isPreparing ? (
               <span style={{ color: getTimerColor() }} className="font-mono text-xs font-bold transition-colors duration-300">
                 {formatTime(timeLeft)} remaining
+              </span>
+            ) : isSequenceType ? (
+              <span style={{ color: getTimerColor() }} className="font-mono text-xs font-black bg-sky-50 px-2 py-0.5 rounded border border-sky-200 transition-colors duration-300 uppercase tracking-wider">
+                Round {repTelemetry.currentRep} of {repTelemetry.totalReps}
               </span>
             ) : isRepsType ? (
               /* RESTORED REPETITION DISPLAY: Hides time values and outputs counts */

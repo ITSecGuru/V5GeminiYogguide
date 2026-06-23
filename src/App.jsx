@@ -35,6 +35,7 @@ const App = () => {
     isPreparing, 
     isRoutineComplete, // Triggers celebration panel visibility at final index completion
     repTelemetry,      // Provides precise rep-by-rep countdown tracking metrics
+    currentStepDuration,
     startTimer, 
     pauseTimer, 
     resetTimer, 
@@ -171,6 +172,7 @@ const App = () => {
                   timerStatus={timerStatus} 
                   timeLeft={timeLeft} 
                   isPreparing={isPreparing}
+                  currentStepDuration={currentStepDuration}
                   repTelemetry={repTelemetry} 
                   startTimer={startTimer} 
                   pauseTimer={pauseTimer} 

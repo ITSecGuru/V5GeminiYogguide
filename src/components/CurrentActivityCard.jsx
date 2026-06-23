@@ -7,6 +7,29 @@
 import React from 'react';
 import { AlertTriangle, Clock } from 'lucide-react';
 
+const BREATH_ANIMATIONS = {
+  'kapal-bhati': {
+    bodyClass: 'bg-amber-100 border-amber-200 text-amber-700 animate-kapal-bhati',
+    ringClass: 'border-amber-200 opacity-40 animate-kapal-ring',
+    label: 'Kapal Bhati'
+  },
+  'anulom-vilom': {
+    bodyClass: 'bg-slate-100 border-slate-300 text-slate-800 animate-anulom-vilom',
+    ringClass: 'border-slate-300 opacity-30 animate-anulom-ring',
+    label: 'Anulom Vilom'
+  },
+  'bhramari': {
+    bodyClass: 'bg-violet-100 border-violet-200 text-violet-700 animate-bhramari',
+    ringClass: 'border-violet-200 opacity-35 animate-bhramari-ring',
+    label: 'Bhramari'
+  },
+  default: {
+    bodyClass: 'bg-sky-100 border-sky-200 text-sky-700 animate-breath',
+    ringClass: 'border-sky-200 opacity-40 animate-breath-ring',
+    label: 'Breathing'
+  }
+};
+
 const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => { 
   if (!currentStep) return null;
 
@@ -19,6 +42,22 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
   const hasVideo = currentStep.videoUrl && currentStep.videoUrl.trim() !== "";
   const isRepsType = currentStep.type === 'reps';
   const isHindi = uiLanguage === "Devanagari";
+
+  const breathAnimation = (() => {
+    const stepAnimation = BREATH_ANIMATIONS[currentStep.stepKey] || BREATH_ANIMATIONS.default;
+    const localizedLabel = currentStep.stepKey && currentStep.stepKey === 'anulom-vilom'
+      ? (isHindi ? 'अनुलोम विलोम' : 'Anulom Vilom')
+      : currentStep.stepKey && currentStep.stepKey === 'kapal-bhati'
+        ? (isHindi ? 'कपाल भाति' : 'Kapal Bhati')
+        : currentStep.stepKey && currentStep.stepKey === 'bhramari'
+          ? (isHindi ? 'भ्रामरी' : 'Bhramari')
+          : (isHindi ? 'श्वास' : 'Breathing');
+
+    return {
+      ...stepAnimation,
+      label: localizedLabel
+    };
+  })();
 
   return (
     <div className={`bg-white rounded-2xl shadow-sm border ${isPreparing ? 'border-amber-400 shadow-md' : 'border-slate-100'} p-4 md:p-5 mb-3 transition-all duration-300`}>
@@ -101,6 +140,33 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
                </span>
             )}
           </div>
+
+          {((currentStep.breathPattern && currentStep.breathPattern.trim() !== '') || currentStep.type === 'time' && currentStep.category === 'Pranayama' || currentStep.stepKey === 'surya-namaskar') && (
+            <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+              <div className="relative flex-shrink-0">
+                <div className={`w-12 h-12 rounded-full ${breathAnimation.bodyClass} flex items-center justify-center font-bold`}>
+                  <span>{breathAnimation.label.charAt(0)}</span>
+                </div>
+                <div className={`absolute inset-0 rounded-full border ${breathAnimation.ringClass}`} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                  {isHindi ? 'श्वास पैटर्न' : 'Breath Pattern'}
+                </p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-1">
+                  {isHindi ? `एनिमेशन: ${breathAnimation.label}` : `Animation: ${breathAnimation.label}`}
+                </p>
+                <p className="text-sm text-slate-600">
+                  {currentStep.breathPattern && currentStep.breathPattern.trim() !== ''
+                    ? currentStep.breathPattern
+                    : currentStep.stepKey === 'surya-namaskar'
+                      ? (isHindi ? 'आसन के साथ सांस में समन्वय करें' : 'Sync inhale/exhale with movement')
+                      : (isHindi ? 'धीमा और समान श्वास लें' : 'Breathe slowly and evenly')
+                  }
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Safety Advisory Panel */}
           {currentStep.caution && (

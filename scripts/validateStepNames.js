@@ -242,6 +242,20 @@ function checkDuplicateEnglishNames(stepDatabase) {
   }
 }
 
+function checkMissingMediaFallback(stepDatabase) {
+  for (const [stepId, step] of Object.entries(stepDatabase)) {
+    const hasAudio = typeof step.audioUrl === "string" && step.audioUrl.trim() !== "";
+    const hasVideo = typeof step.videoUrl === "string" && step.videoUrl.trim() !== "";
+    const hasPicture = typeof step.pictureUrl === "string" && step.pictureUrl.trim() !== "";
+
+    if (!hasAudio && !hasVideo && !hasPicture) {
+      addWarning(
+        `Step "${stepId}" has no media fallback: audioUrl, videoUrl, and pictureUrl are all empty.`
+      );
+    }
+  }
+}
+
 async function main() {
   console.log("Validating Lata Yog Routine Guide step database...\n");
 
@@ -270,6 +284,7 @@ async function main() {
 
   if (stepDatabase) {
     validateRoutineKeys(routines, stepDatabase);
+    checkMissingMediaFallback(stepDatabase);
   }
 
   checkRuntimeBackupImports();
