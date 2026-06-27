@@ -110,6 +110,53 @@
   }
 }
 
+@keyframes pranayama-inhale {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+@keyframes pranayama-exhale {
+  0%, 100% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+}
+
+.animate-pranayama-inhale {
+  animation: pranayama-inhale 4s ease-in-out infinite;
+}
+
+.animate-pranayama-exhale {
+  animation: pranayama-exhale 8s ease-in-out infinite;
+}
+
+/* Smooth outer SVG stroke animation for pranayama progress */
+.pranayama-outer-circle {
+  transition: stroke-dashoffset 400ms ease, stroke 300ms ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 0 2px rgba(30, 64, 175, 0.35));
+}
+
+.pranayama-outer-circle[stroke-dashoffset="0"] {
+  transition-duration: 300ms;
+}
+
+/* Improve visibility for inner segment backgrounds */
+.pranayama-inner-faint {
+  background-color: rgba(148,163,184,0.08);
+}
+
 .animate-breath {
   animation: breathe 4s ease-in-out infinite;
 }

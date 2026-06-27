@@ -3,7 +3,7 @@
  * @description Master Playlist Factory with bulletproof auto-side expansion mapping filters for V8.1.
  */
 
-import { stepDatabase } from './stepNamesv1';
+import { stepDatabase } from './stepNames.js';
 
 const masterRoutinesConfig = [
   {

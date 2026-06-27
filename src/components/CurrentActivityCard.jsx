@@ -7,9 +7,11 @@
 import React from 'react';
 import { AlertTriangle, Clock } from 'lucide-react';
 import BREATH_ANIMATIONS from '../lib/breathAnimations.js';
+import { pranayamNames } from '../data/stepNames.js';
 import BreathSubstepTimer from './BreathSubstepTimer.jsx';
+import PranayamaProgressRings from './PranayamaProgressRings.jsx';
 
-const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => { 
+const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, currentStepDuration }) => { 
   if (!currentStep) return null;
 
   const baseUrl = import.meta.env.BASE_URL || '/';
@@ -23,14 +25,12 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
   const isHindi = uiLanguage === "Devanagari";
 
   const breathAnimation = (() => {
-    const stepAnimation = BREATH_ANIMATIONS[currentStep.stepKey] || BREATH_ANIMATIONS.default;
-    const localizedLabel = currentStep.stepKey && currentStep.stepKey === 'anulom-vilom'
-      ? (isHindi ? 'अनुलोम विलोम' : 'Anulom Vilom')
-      : currentStep.stepKey && currentStep.stepKey === 'kapal-bhati'
-        ? (isHindi ? 'कपाल भाति' : 'Kapal Bhati')
-        : currentStep.stepKey && currentStep.stepKey === 'bhramari'
-          ? (isHindi ? 'भ्रामरी' : 'Bhramari')
-          : (isHindi ? 'श्वास' : 'Breathing');
+    const animationKey = currentStep.breathAnimationKey || currentStep.stepKey || 'default';
+    const stepAnimation = BREATH_ANIMATIONS[animationKey] || BREATH_ANIMATIONS.default;
+    const pranayamMetadata = pranayamNames[currentStep.breathAnimationKey || currentStep.stepKey];
+    const localizedLabel = isHindi
+      ? pranayamMetadata?.devanagari || currentStep.names?.devanagari || stepAnimation.label
+      : pranayamMetadata?.english || currentStep.names?.english || stepAnimation.label;
 
     return {
       ...stepAnimation,
@@ -120,7 +120,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
             )}
           </div>
 
-          {((currentStep.breathPattern && currentStep.breathPattern.trim() !== '') || currentStep.type === 'time' && currentStep.category === 'Pranayama' || currentStep.stepKey === 'surya-namaskar') && (
+          {((currentStep.breathPattern && currentStep.breathPattern.trim() !== '') || (currentStep.type === 'time' && currentStep.category === 'Pranayama')) && (
             <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3">
               <div className="relative flex-shrink-0">
                 <div className={`w-12 h-12 rounded-full ${breathAnimation.bodyClass} flex items-center justify-center font-bold`}>
@@ -144,7 +144,20 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage }) => {
                   }
                 </p>
                 {currentStep.pranayamSteps && currentStep.pranayamSteps.length > 0 && (
-                  <BreathSubstepTimer pranayamSteps={currentStep.pranayamSteps} uiLanguage={uiLanguage} />
+                  <div className="mt-3 space-y-3">
+                    <PranayamaProgressRings
+                      step={currentStep}
+                      uiLanguage={uiLanguage}
+                      timeLeft={timeLeft}
+                      currentStepDuration={currentStepDuration}
+                    />
+                    <BreathSubstepTimer
+                      pranayamSteps={currentStep.pranayamSteps}
+                      uiLanguage={uiLanguage}
+                      timeLeft={timeLeft}
+                      currentStepDuration={currentStepDuration}
+                    />
+                  </div>
                 )}
               </div>
             </div>

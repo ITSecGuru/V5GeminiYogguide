@@ -63,9 +63,16 @@ const speakNative = (text, lang, rate = 0.8, pitch = 1.05, volume = 1, meta = {}
   };
 
   const bestVoice = getBestVoice(voices, useHiVoice ? voiceMap.hi : voiceMap.en);
-  if (bestVoice) utterance.voice = bestVoice;
+  if (bestVoice) {
+    utterance.voice = bestVoice;
+  } else if (voices.length > 0) {
+    utterance.voice = voices[0];
+    if (isTtsDebugEnabled()) {
+      logTtsEvent({ type: 'native-speak-fallback', message: 'No preferred voice found, using first available voice', voice: utterance.voice.name, voiceLang: utterance.voice.lang, stepId: meta?.stepId });
+    }
+  }
 
-  utterance.lang = useHiVoice ? 'hi-IN' : 'en-US';
+  utterance.lang = utterance.voice?.lang || (useHiVoice ? 'hi-IN' : 'en-US');
   utterance.rate = rate;
   utterance.pitch = pitch;
   utterance.volume = volume;
@@ -74,20 +81,27 @@ const speakNative = (text, lang, rate = 0.8, pitch = 1.05, volume = 1, meta = {}
     logTtsEvent({ type: 'native-speak', text, lang: utterance.lang, voice: utterance.voice?.name || null, rate, pitch, volume, stepId: meta?.stepId });
   }
 
+  let hasSpoken = false;
+  const speakOnce = () => {
+    if (hasSpoken) return;
+    hasSpoken = true;
+    window.speechSynthesis.speak(utterance);
+  };
+
   if (!voices.length) {
     const handleVoicesChanged = () => {
       const updatedVoices = window.speechSynthesis.getVoices();
       const fallbackVoice = getBestVoice(updatedVoices, useHiVoice ? voiceMap.hi : voiceMap.en);
       if (fallbackVoice) utterance.voice = fallbackVoice;
-      window.speechSynthesis.speak(utterance);
+      utterance.lang = utterance.voice?.lang || (useHiVoice ? 'hi-IN' : 'en-US');
+      speakOnce();
       window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
     };
 
     window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
-    return;
   }
 
-  window.speechSynthesis.speak(utterance);
+  speakOnce();
 };
 
 export const isExternalTTSActive = () => externalActive;

@@ -24,10 +24,21 @@ Provide a clear, timed breathing guidance experience for `anulom-vilom` that ref
 - The animation should not be limited to a single static text label. It should visibly pulse through the four substeps and use a full 24-second cycle.
 - The card should continue to display the current step label, animation label, and the breath pattern text together.
 - Each Pranayama step must be handled using step metadata or a lookup table, not a hardcoded monolithic switch statement. This supports different breathing patterns per pranayama while keeping the component logic flexible.
+- NOTE: The first five warm-up steps (`yogic-jogging-position-1` through `yogic-jogging-position-5`) are being used as temporary test entries for the current breathing animation metadata and UI flow. Remove or reset these test steps once the Pranayama metadata path is validated.
 
 ### Recommended animation design
 - Use a 24-second CSS animation for `anulom-vilom` to match the real Pranayama timing.
-- The body badge animation should:
+- Prefer a concentric ring design instead of a single static badge:
+  - outer ring: shows total progress through the full pranayama session (e.g. 40 recommended cycles)
+    - each completed cycle increments the visible count and changes the outer ring shade to reflect progress.
+    - the outer ring should be drawn as a progress arc/circle that fills smoothly as cycles complete.
+  - inner ring: indicates the current substep within the active 4-step cycle.
+    - substeps are numbered 1 to 4 and visually highlighted in the inner ring.
+    - the inner ring changes state on each `Purak` / `Rechak` transition.
+  - core circle: animates expansion for inhale and compression for exhale.
+    - inhalation should gently grow the core circle radius.
+    - exhalation should gently shrink or soften the core circle.
+- The body badge animation should also:
   - expand gently during each inhale phase
   - contract or soften during each exhale phase
   - move subtly left/right to suggest alternate nostrils between the two inhale/exhale pairs.

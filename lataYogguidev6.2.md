@@ -3,89 +3,64 @@ Here is the official, refreshed technical specification for Lata Yog Routine Gui
 1. High-Level Architecture (The Tech Stack)
 Framework: React 18 powered by Vite (for lightning-fast hot module reloading).
 
-Styling: Tailwind CSS (configured for mobile-first responsiveness using md: prefixes).
+Styling: Tailwind CSS (configured for mobile-first responsiveness with utility classes).
 
 Hosting: GitHub Pages (deployed via the gh-pages npm package).
 
-State Management: Centralized Custom Hook (useRoutineRunner.js), keeping the UI components "dumb" and strictly focused on rendering.
+State Management: Centralized custom hook (`useRoutineRunner.js`), keeping the UI components focused on rendering.
 
-2. The Data Model (src/data/routines.js)
-The app relies on a structured JSON-like array. To prepare for our upcoming database timing upgrade, the data structure explicitly separates the total time from the individual repetitions.
+2. The Data Model
+The app uses a data-driven routine assembly model. `src/data/routines.js` references step keys and hydrates them with metadata from `src/data/stepNames.js`.
 
-JavaScript
-// Example Data Structure
-export const routines = [
-  {
-    id: 'patanjaliJogging1',
-    label: 'Patanjali Yogic Jogging Part 1',
-    steps: [
-      {
-        id: 'patanjaliJogging1-step-1',
-        type: 'reps', // or 'time'
-        names: {
-          english: 'Yogic Jogging Position 1',
-          devanagari: 'यौगिक जॉगिंग स्थिति 1'
-        },
-        defaultTotalTime: 60,
-        timePerRep: 5, // <-- Our next major feature will utilize this!
-        image: '/assets/images/patanjaliJogging1-step-1.jpg' 
-      }
-    ]
-  }
-];
+A single source of truth for step definitions keeps the app flexible and avoids hardcoded exercise logic in components.
+
 3. Component Manifest & Design Rules
-The UI is broken into four distinct "Cards" orchestrated by App.jsx. The design language uses a light gray background (bg-slate-50) with stark white cards (bg-white) featuring soft shadows and rounded corners (rounded-2xl).
+The UI is broken into a small set of reusable cards managed by `App.jsx`.
 
-A. Settings Card (SettingsCard.jsx)
-Responsibility: Handles global app variables (Routine selection, UI Language, Audio Language, Global Mute).
+A. Settings Card (`SettingsCard.jsx`)
+Responsibility: Handles routine selection, UI language, audio language, and mute state.
 
-Design Note: Uses standard HTML <select> dropdowns styled with Tailwind focus rings (focus:ring-blue-500) to remain accessible and native on mobile devices.
+B. Current Activity Card (`CurrentActivityCard.jsx`)
+Responsibility: Displays the active step’s media, localized labels, timing, and breath guidance.
 
-B. Current Activity Card (CurrentActivityCard.jsx)
-Responsibility: Displays the active step's image, localized name, and exercise type.
+C. Session Controls Card (`SessionControlsCard.jsx`)
+Responsibility: Manages the timer, auto progression, step reset, and playback controls.
 
-Code Concept (Graceful Fallbacks): Images are loaded dynamically, but if a specific image fails to load, it falls back to a default placeholder to prevent UI breaks.
+D. Routine Playlist Card (`RoutinePlaylistCard.jsx`)
+Responsibility: Displays the current routine queue and highlights the active step.
 
-JavaScript
-// Graceful Image Fallback Logic
-const baseUrl = import.meta.env.BASE_URL;
-const imageSrc = currentStep.image || `${baseUrl}assets/images/${currentStep.id}.jpg`;
-const fallbackSrc = `${baseUrl}assets/images/default.jpg`;
+4. Core Engine (`useRoutineRunner.js`)
+This hook contains the session state and timer loop. It increments the active step, advances through side-based steps, and tracks preparation/active timing.
 
-<img 
-  src={imageSrc} 
-  onError={(e) => { e.target.onerror = null; e.target.src = fallbackSrc; }} 
-/>
-C. Session Controls Card (SessionControlsCard.jsx)
-Responsibility: The "Tape Deck." Manages the timer, auto-play progression, and overall session progress bar.
+5. Pranayama and Breath Guidance
+Pranayama steps use metadata such as `breathPattern`, `breathAnimationKey`, and optional `pranayamSteps` to render breathing guidance and progress rings.
 
-Design Note: Buttons are strictly color-coded by action severity:
+6. Implementation Notes
+- Actual dependencies are: `react`, `react-dom`, `@vitejs/plugin-react`, `tailwindcss`, `postcss`, `autoprefixer`, `vite`, `vitest`, `eslint`, `lucide-react`, and `gh-pages`.
+- `framer-motion` is not currently part of the installed dependency set.
 
-Start: Emerald (bg-emerald-600)
-
-Pause: Amber (bg-amber-500)
-
-Complete & Next: Blue (bg-blue-600)
-
-Prev: Slate (bg-slate-600)
-
-Reset: Light Slate (bg-slate-200)
-
-D. Routine Playlist Card (RoutinePlaylistCard.jsx)
-Responsibility: Shows the upcoming queue of exercises.
-
-Code Concept (Dynamic Styling): Uses conditional template literals to highlight the active step and visually dim past steps.
-
-JavaScript
-// Playlist Styling Logic
-className={`... ${
-  isActive 
-    ? 'border-blue-500 bg-blue-50' 
-    : isPast 
-      ? 'border-gray-200 bg-gray-50 opacity-60' 
-      : 'border-gray-100 bg-white'
-}`}
-4. Core Engine (useRoutineRunner.js)
-This is the brain of the app. It holds all state and runs the timer loop via useEffect.
-
-Auto-Play Logic: When currentStepTimeLeft hits 0, it triggers completeAndNext(), which increments the index and explicitly sets setTimerStatus('running') to seamlessly chain exercises together.
+7. Recommended File Structure
+```text
+package.json
+vite.config.js
+tailwind.config.js
+.gitignore
+README.md
+index.html
+src/
+  components/
+    CurrentActivityCard.jsx
+    RoutinePlaylistCard.jsx
+    SettingsCard.jsx
+    SessionControlsCard.jsx
+  data/
+    stepNames.js
+    routines.js
+  hooks/
+    useRoutineRunner.js
+  lib/
+    audio.js
+  App.jsx
+  main.jsx
+  styles.css
+```

@@ -31,6 +31,24 @@
  * @field pictureUrl (Str)  - Specific image override. (App defaults to /assets/images/[key].jpg if blank).
  */
 
+export const pranayamNames = {
+  "anulom-vilom": {
+    devanagari: "अनुलोम विलोम",
+    transliteration: "Anulom Vilom",
+    english: "Alternate Nostril Breathing"
+  },
+  "kapal-bhati": {
+    devanagari: "कपालभाति",
+    transliteration: "Kapal Bhati",
+    english: "Skull-Shining Breath"
+  },
+  "bhramari": {
+    devanagari: "भ्रामरी",
+    transliteration: "Bhramari",
+    english: "Humming Bee Breath"
+  }
+};
+
 export const stepDatabase = {
   // --- WARM UPS & JOGGING ---
   
@@ -56,31 +74,47 @@ export const stepDatabase = {
     names: { devanagari: "योगिक जॉगिंग स्थिति 1", roman: "Yogic Jogging Sthiti 1", english: "Yogic Jogging Position 1" },
     category: "Warm Up",
     type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    testMode: true,
     caution: "Do not hyperextend the knees.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-2": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 2", roman: "Yogic Jogging Sthiti 2", english: "Yogic Jogging Position 2" },
     category: "Warm Up",
     type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    testMode: true,
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-3": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 3", roman: "Yogic Jogging Sthiti 3", english: "Yogic Jogging Position 3" },
     category: "Warm Up",
     type: "time", duration: 10, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    testMode: true,
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-4": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 4", roman: "Yogic Jogging Sthiti 4", english: "Yogic Jogging Position 4" },
     category: "Warm Up",
     type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    testMode: true,
     caution: "Coordinate breathing with the leg movement.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-5": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 5", roman: "Yogic Jogging Sthiti 5", english: "Yogic Jogging Position 5" },
     category: "Warm Up",
-    type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
-    caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    type: "reps", duration: null, reps: 40, timePerRep: 24, prepTime: 5, hasSides: false,
+    breathPattern: "Cycle: Purak 4s, Rechak 8s, Purak 4s, Rechak 8s. Repeat for 40 cycles (~16 minutes).",
+    breathAnimationKey: "anulom-vilom",
+    breathCycleDuration: 24,
+    recommendedCycles: 40,
+    pranayamSteps: [
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 },
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 }
+    ],
+    testMode: true,
+    benefits: "Test the new pranayama rendering flow.",
+    caution: "This metadata is for UI testing only.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
 
   // --- KRIYAS ---

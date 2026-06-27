@@ -25,7 +25,7 @@ describe('CurrentActivityCard', () => {
     render(<CurrentActivityCard currentStep={baseStep} isPreparing={false} uiLanguage="English" />);
 
     expect(screen.getByText(/Breath Pattern/i)).toBeInTheDocument();
-    expect(screen.getByText(/Animation: Kapal Bhati/i)).toBeInTheDocument();
+    expect(screen.getByText(/Animation: Skull-Shining Breath/i)).toBeInTheDocument();
     expect(screen.getByText(/Forceful exhale through the nose/i)).toBeInTheDocument();
   });
 
@@ -43,7 +43,7 @@ describe('CurrentActivityCard', () => {
 
     render(<CurrentActivityCard currentStep={step} isPreparing={false} uiLanguage="English" />);
 
-    expect(screen.getByText(/Animation: Breathing/i)).toBeInTheDocument();
+    expect(screen.getByText(/Animation: Easy Breathing/i)).toBeInTheDocument();
     expect(screen.getByText(/Inhale for 4, exhale for 4/i)).toBeInTheDocument();
   });
 });

@@ -15,17 +15,16 @@ Unlike previous versions with heavily hard-coded routine steps, v5 utilizes a **
 ## 1. Tech Stack
 
 Use:
-* React
+* React 18
 * Vite
 * Tailwind CSS
-* Framer Motion
 * lucide-react
 
 Package dependencies must include:
 * `react`, `react-dom`
 * `@vitejs/plugin-react`, `vite`
 * `tailwindcss`, `postcss`, `autoprefixer`
-* `framer-motion`, `lucide-react`
+* `lucide-react`
 
 Use:
 * Functional React components and modern hooks

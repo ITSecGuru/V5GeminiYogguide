@@ -16,37 +16,19 @@ The main specification describes the intended product and architecture. This bac
 
 ### Description
 
-In at least one instance, a side-based step advances to the next exercise instead of moving from Left Side to Right Side.
+The expanded routine sequence sometimes advances from a left-side step directly to the next exercise without presenting the right-side counterpart.
 
 ### Expected behaviour
 
-For any step with `hasSides: true`, the app should move:
+For any step with `hasSides: true`, the app should progress as:
 
 ```text
 Left Side → Right Side → Next Exercise
+```
 
+### Notes
 
----
-
-## 3. Optional small update to `docs/BUG_BACKLOG.md`
-
-Add this at the bottom:
-
-```markdown
----
-
-## Future Validation Improvements
-
-The data validation script should eventually detect:
-
-```text
-unused step definitions
-duplicate names across languages
-missing media fallback
-invalid picture/video paths
-internalSteps consistency
-side-step progression risks
-missing breathing metadata for pranayama steps
+The underlying mapping logic lives in `src/data/routines.js`, which expands `hasSides` steps into left/right items during routine construction.
 
 ---
 
@@ -57,14 +39,31 @@ missing breathing metadata for pranayama steps
 **Area:** UI / Pranayama guidance
 
 ### Description
+
 - `anulom-vilom` should support a full 24-second breathing cycle with four substeps: inhale (Purak), exhale (Rechak), inhale (Purak), exhale (Rechak).
 - The current animation is too short and the step metadata lacks explicit breath cycle guidance.
-- The card should display both the animation and a descriptive breath pattern text.
+- The card should display both the animation label and a descriptive breath pattern text.
 
 ### Expected behaviour
-- `docs/LATA_YOG_FUNCTIONAL_TECHNICAL_SPEC_V8_1.md` contains the `anulom-vilom` timing and session guidance.
-- `src/styles.css` uses a 24s `anulom-vilom` animation cycle.
-- `src/data/stepNames.js` includes a `breathPattern` string for `anulom-vilom` describing the 4s inhale / 8s exhale phase timing.
+
+- `docs/LATA_YOG_FUNCTIONAL_TECHNICAL_SPEC_V8_1.md` documents `anulom-vilom` timing and session guidance.
+- `src/styles.css` should support a 24s `anulom-vilom` animation cycle.
+- `src/data/stepNames.js` should include a clear `breathPattern` string for `anulom-vilom` describing the 4s inhale / 8s exhale phase timing.
 
 ### Notes
-- This item tracks the pending activity for completing the Anulom Vilom breath guidance specification and animation implementation.
+
+This entry tracks the remaining Pranayama guidance implementation work for the current application version.
+
+---
+
+## Future Validation Improvements
+
+The data validation script should eventually detect:
+
+- unused step definitions
+- duplicate names across languages
+- missing media fallback
+- invalid picture/video paths
+- internalSteps consistency issues
+- side-step progression risks
+- missing breathing metadata for pranayama steps
