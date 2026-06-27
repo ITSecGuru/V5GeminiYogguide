@@ -58,9 +58,12 @@ A typical step entry includes:
 ## Change Guidelines
 
 - When adding or updating steps, follow the existing key naming conventions and make sure step keys are unique.
+- Keep step metadata in `src/data/stepNames.js` and routine sequencing in `src/data/routines.js`.
 - If a step uses `hasSides`, confirm the app correctly expands both left and right versions in `src/data/routines.js`.
-- For new pranayama steps, provide `breathPattern` text and consider adding `pranayamSteps` to support progress rings.
-- Keep the database normalized: do not duplicate step logic in components or hook code.
+- For new pranayama steps, provide `breathPattern`, `breathAnimationKey`, and consider adding `pranayamSteps` to support progress rings and substep timers.
+- Use `breathCycleDuration` when the total cycle time should be explicit; otherwise allow the UI to derive it from `pranayamSteps`.
+- Avoid duplicating step behavior in components or hook code.
+- Avoid runtime imports from backup files such as `./backup/stepNames` or `backup/stepNamesv7`.
 
 ## Validation
 
@@ -70,4 +73,4 @@ Run:
 npm run validate:data
 ```
 
-This validates step names and step metadata consistency before merging changes.
+This validates step names, routine step keys, and step metadata consistency before merging changes.

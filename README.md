@@ -1,15 +1,16 @@
 # Lata Yog Routine Guide
 
-A modern, responsive React web application designed to guide users through structured yoga routines. Built with Vite, Tailwind CSS, and lucide-react.
+A modern, responsive React web application for guided yoga routines, breathwork, and pranayama support. Built with Vite, Tailwind CSS, and lucide-react.
 
 ## Features
 - React 18 + Vite frontend application
-- Tailwind CSS layout and responsive styling
+- Tailwind CSS responsive styling
 - centralized step database in `src/data/stepNames.js`
 - dynamic routine assembly from `src/data/routines.js`
 - localized UI and audio prompts for English and Devanagari
 - breath guidance and pranayama progress rendering
-- GitHub Pages support using the `gh-pages` deploy script
+- step validation for routine and metadata consistency
+- optional GitHub Pages deployment using the `gh-pages` package
 
 ## Setup Instructions
 1. Install dependencies: `npm install`
@@ -24,10 +25,10 @@ A modern, responsive React web application designed to guide users through struc
 - `npm run preview` — preview the built site locally
 - `npm run test` — run unit tests with Vitest
 - `npm run lint` — run ESLint across source files
-- `npm run validate:data` — validate `src/data/stepNames.js`
+- `npm run validate:data` — validate `src/data/stepNames.js` and routine integrity
 - `npm run deploy` — deploy `dist` to GitHub Pages
 
 ## Notes
-- The app base path is configured in `vite.config.js` as `/V5GeminiYogguide/` for GitHub Pages.
-- Main application logic lives in `src/App.jsx`, `src/hooks/useRoutineRunner.js`, and `src/components/CurrentActivityCard.jsx`.
-- Routine definitions are sourced from `src/data/routines.js` and hydrated from the central step database in `src/data/stepNames.js`.
+- `vite.config.js` sets the base path to `/V5GeminiYogguide/` for GitHub Pages.
+- Core application logic lives in `src/App.jsx`, `src/hooks/useRoutineRunner.js`, and `src/components/CurrentActivityCard.jsx`.
+- Routine definitions are assembled from `src/data/routines.js` and hydrated from `src/data/stepNames.js`.

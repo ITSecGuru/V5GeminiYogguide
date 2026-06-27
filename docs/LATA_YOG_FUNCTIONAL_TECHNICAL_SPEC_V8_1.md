@@ -24,7 +24,7 @@ Provide a clear, timed breathing guidance experience for `anulom-vilom` that ref
 - The animation should not be limited to a single static text label. It should visibly pulse through the four substeps and use a full 24-second cycle.
 - The card should continue to display the current step label, animation label, and the breath pattern text together.
 - Each Pranayama step must be handled using step metadata or a lookup table, not a hardcoded monolithic switch statement. This supports different breathing patterns per pranayama while keeping the component logic flexible.
-- NOTE: The first five warm-up steps (`yogic-jogging-position-1` through `yogic-jogging-position-5`) are being used as temporary test entries for the current breathing animation metadata and UI flow. Remove or reset these test steps once the Pranayama metadata path is validated.
+- NOTE: The first five warm-up steps (`yogic-jogging-position-1` through `yogic-jogging-position-5`) still contain temporary pranayama metadata for the current breathing animation validation flow. Replace or reset these test entries once the production pranayama metadata path is fully validated.
 
 ### Recommended animation design
 - Use a 24-second CSS animation for `anulom-vilom` to match the real Pranayama timing.

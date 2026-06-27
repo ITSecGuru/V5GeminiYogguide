@@ -15,4 +15,5 @@ Closes #<issue-number>
 - [ ] Tests added/updated
 - [ ] Lint passes
 - [ ] Build succeeds
+- [ ] I ran `npm run validate:data` for any data or routine changes
 - [ ] I ran this locally in Codespaces (if applicable)
