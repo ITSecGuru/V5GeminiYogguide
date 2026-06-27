@@ -1,32 +1,161 @@
-export const playAudioPrompt = (step, language = 'en', omitStepName = false) => {
+import { isTtsDebugEnabled, logTtsEvent } from './ttsDebug';
+
+const getBestVoice = (voices, preferredLangs) => {
+  for (const lang of preferredLangs) {
+    const match = voices.find((v) => v.lang?.toLowerCase().startsWith(lang.toLowerCase()));
+    if (match) return match;
+  }
+
+  for (const lang of preferredLangs) {
+    const match = voices.find((v) => v.name?.toLowerCase().includes(lang.toLowerCase()));
+    if (match) return match;
+  }
+
+  return voices[0] || null;
+};
+
+const isDevanagariText = (text) => /[\u0900-\u097F]/.test(text);
+
+// runtime flag exposed so callers can inspect which TTS is active
+let externalActive = false;
+
+const setTtsStatus = (isExternal) => {
+  externalActive = !!isExternal;
+  try {
+    window.__externalTtsActive = externalActive; // easy debug from console
+    const ev = new CustomEvent('tts-status-changed', { detail: { external: externalActive } });
+    window.dispatchEvent(ev);
+  } catch (err) {
+    // ignore dispatch errors in non-browser test environments
+  }
+};
+
+const isExternalTtsAvailable = () => typeof window.externalSpeechSynthesizer?.speak === 'function';
+
+const speakExternal = (text, options = {}) => {
+  if (!isExternalTtsAvailable()) return false;
+
+  try {
+    window.externalSpeechSynthesizer.speak({ text, ...options });
+    setTtsStatus(true);
+    if (isTtsDebugEnabled()) logTtsEvent({ type: 'external-speak', text, options, stepId: options?.stepId });
+    return true;
+  } catch (error) {
+    console.warn('External speech synthesizer failed, falling back to native TTS.', error);
+    setTtsStatus(false);
+    if (isTtsDebugEnabled()) logTtsEvent({ type: 'external-fail', error: String(error), text, options, stepId: options?.stepId });
+    return false;
+  }
+};
+
+const speakNative = (text, lang, rate = 0.8, pitch = 1.05, volume = 1, meta = {}) => {
+  // mark native as active before speaking
+  setTtsStatus(false);
   if (!window.speechSynthesis) return;
 
-  window.speechSynthesis.cancel();
-  let promptText = "";
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const useHiVoice = lang === 'hi' || isDevanagariText(text);
+
+  const voiceMap = {
+    hi: ['hi-IN', 'hi'],
+    en: ['en-US', 'en-GB', 'en']
+  };
+
+  const bestVoice = getBestVoice(voices, useHiVoice ? voiceMap.hi : voiceMap.en);
+  if (bestVoice) {
+    utterance.voice = bestVoice;
+  } else if (voices.length > 0) {
+    utterance.voice = voices[0];
+    if (isTtsDebugEnabled()) {
+      logTtsEvent({ type: 'native-speak-fallback', message: 'No preferred voice found, using first available voice', voice: utterance.voice.name, voiceLang: utterance.voice.lang, stepId: meta?.stepId });
+    }
+  }
+
+  utterance.lang = utterance.voice?.lang || (useHiVoice ? 'hi-IN' : 'en-US');
+  utterance.rate = rate;
+  utterance.pitch = pitch;
+  utterance.volume = volume;
+
+  if (isTtsDebugEnabled()) {
+    logTtsEvent({ type: 'native-speak', text, lang: utterance.lang, voice: utterance.voice?.name || null, rate, pitch, volume, stepId: meta?.stepId });
+  }
+
+  let hasSpoken = false;
+  const speakOnce = () => {
+    if (hasSpoken) return;
+    hasSpoken = true;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  if (!voices.length) {
+    const handleVoicesChanged = () => {
+      const updatedVoices = window.speechSynthesis.getVoices();
+      const fallbackVoice = getBestVoice(updatedVoices, useHiVoice ? voiceMap.hi : voiceMap.en);
+      if (fallbackVoice) utterance.voice = fallbackVoice;
+      utterance.lang = utterance.voice?.lang || (useHiVoice ? 'hi-IN' : 'en-US');
+      speakOnce();
+      window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
+    };
+
+    window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
+  }
+
+  speakOnce();
+};
+
+export const isExternalTTSActive = () => externalActive;
+
+export const speakDevanagari = (text) => {
+  if (!text) return;
+  const options = { lang: 'hi-IN', rate: 0.8, pitch: 1.05, volume: 1 };
+  if (speakExternal(text, options)) return;
+  speakNative(text, 'hi', options.rate, options.pitch, options.volume, { stepId: options.stepId });
+};
+
+export const speakText = (text, language = 'en', meta = {}) => {
+  if (!text) return;
+  if (isDevanagariText(text)) {
+    // pass stepId through to speakDevanagari's external/native call
+    const options = { lang: 'hi-IN', rate: 0.8, pitch: 1.05, volume: 1, stepId: meta?.stepId };
+    if (speakExternal(text, options)) return;
+    speakNative(text, 'hi', options.rate, options.pitch, options.volume, { stepId: meta?.stepId });
+    return;
+  }
+
+  const lang = language === 'hi' ? 'hi' : 'en';
+  const options = {
+    lang: lang === 'hi' ? 'hi-IN' : 'en-US',
+    rate: language === 'hi' ? 0.8 : 0.95,
+    pitch: 1.05,
+    volume: 1,
+    stepId: meta?.stepId
+  };
+
+  if (speakExternal(text, options)) return;
+  speakNative(text, lang, options.rate, options.pitch, options.volume, { stepId: meta?.stepId });
+};
+
+export const playAudioPrompt = (step, language = 'en', omitStepName = false) => {
+  window.speechSynthesis?.cancel();
+  const names = step.names || {};
+  let promptText = '';
 
   if (omitStepName) {
-    if (language === 'hi') {
-      promptText = step.type === 'reps' ? "दोहराएं" : "समय शुरू"; 
-    } else {
-      promptText = step.type === 'reps' ? "Repeat" : "Time";
-    }
+    promptText = language === 'hi' ? (step.type === 'reps' ? 'दोहराएं' : 'समय शुरू') : (step.type === 'reps' ? 'Repeat' : 'Time');
+  } else if (language === 'hi') {
+    promptText = step.speech?.hi || names.devanagari || names.english || 'शुरू करें';
   } else {
-    const speechData = step.speech || {};
-    promptText = language === 'hi' 
-      ? (speechData.hi || speechData.fallbackHi || "शुरू करें")
-      : (speechData.en || speechData.fallbackEn || "Begin.");
+    promptText = step.speech?.en || names.english || names.devanagari || 'Begin.';
   }
 
-  const utterance = new SpeechSynthesisUtterance(promptText);
-  const voices = window.speechSynthesis.getVoices();
-  
-  if (language === 'hi') {
-    const hindiVoice = voices.find(v => v.lang.startsWith('hi'));
-    if (hindiVoice) utterance.voice = hindiVoice;
-  } else {
-    const englishVoice = voices.find(v => v.lang.startsWith('en'));
-    if (englishVoice) utterance.voice = englishVoice;
+  // Log prompt selection; include stepId only when prompt text is not Devanagari
+  if (isTtsDebugEnabled()) {
+    const isDeva = isDevanagariText(promptText);
+    const promptEvt = { type: 'prompt', text: promptText, language };
+    if (!isDeva && step && step.id) promptEvt.stepId = step.id;
+    logTtsEvent(promptEvt);
   }
 
-  window.speechSynthesis.speak(utterance);
+  speakText(promptText, language);
 };

@@ -1,251 +1,215 @@
-// src/App.jsx
-import { useState, useMemo } from 'react';
-import { Play, Pause, StepForward, RefreshCw, Volume2, VolumeX } from 'lucide-react';
-import useRoutineRunner from './hooks/useRoutineRunner'; 
-import { routines } from './data/routines';
+/**
+ * @file src/App.jsx
+ * @description Master framework layout layer for Lata Yog Guide V8.1.
+ * Pipes real-time repetition telemetry, step transition countdown states,
+ * and global multilingual display parameters directly down into presentation panels.
+ */
 
-function App() {
-  const {
-    currentStep,
-    chosenRoutineKey,
-    setChosenRoutineKey,
-    timerStatus,
-    startTimer,
-    pauseTimer,
-    completeAndNext,
-    resetSession,
-    uiLanguage,
-    setUiLanguage,
-    audioLanguage,
-    setAudioLanguage,
-    isMuted,
-    setIsMuted,
-    totalStepsInRoutine,
-    completedSteps,
-    currentStepTimeTotal,
-    currentStepTimeLeft
+import React, { useState, useEffect } from 'react';
+import { Award, RefreshCw, Sparkles, Compass } from 'lucide-react';
+import SettingsCard from './components/SettingsCard';
+import CurrentActivityCard from './components/CurrentActivityCard';
+import SessionControlsCard from './components/SessionControlsCard';
+import RoutinePlaylistCard from './components/RoutinePlaylistCard';
+import useRoutineRunner from './hooks/useRoutineRunner';
+import { playAudioPrompt } from './lib/audio';
+
+const App = () => {
+  // Shared state parameters for system localization vectors
+  const [uiLanguage, setUiLanguage] = useState("English");
+  const [audioLanguage, setAudioLanguage] = useState("English");
+  const [isMuted, setIsMuted] = useState(false);
+  const [ttsStatus, setTtsStatus] = useState('unknown');
+  const debugMode = import.meta.env.VITE_TTS_DEBUG === 'true' || import.meta.env.VITE_TTS_DEBUG === true;
+
+  // Extract advanced dynamic practice metrics and final lifecycle milestones
+  const { 
+    routines, 
+    selectedRoutineId, 
+    selectRoutine, 
+    currentStep, 
+    steps, 
+    currentStepIndex, 
+    timerStatus, 
+    timeLeft, 
+    isPreparing, 
+    isRoutineComplete, // Triggers celebration panel visibility at final index completion
+    repTelemetry,      // Provides precise rep-by-rep countdown tracking metrics
+    currentStepDuration,
+    startTimer, 
+    pauseTimer, 
+    resetTimer, 
+    completeAndNext, 
+    prevStep 
   } = useRoutineRunner();
 
-  // Helper for routine dropdown options using your pre-built array
-  const routineOptions = useMemo(() => {
-    return routines.map((routine) => ({
-      key: routine.id,
-      name: routine.label 
-    }));
-  }, []);
+  // Play audio prompt when a new step becomes active (respecting mute and voice selection)
+  useEffect(() => {
+    if (!currentStep) return;
+    if (isMuted) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      return;
+    }
+
+    const langCode = audioLanguage === 'Devanagari' ? 'hi' : 'en';
+    playAudioPrompt(currentStep, langCode, false);
+  }, [currentStepIndex, audioLanguage, isMuted, currentStep]);
+
+  // Show a small TTS status indicator when the debug build is active
+  useEffect(() => {
+    if (!debugMode || typeof window === 'undefined') return;
+
+    const initialStatus = window.__externalTtsActive ? 'external' : 'browser';
+    setTtsStatus(initialStatus);
+
+    const handleStatus = (e) => {
+      setTtsStatus(e.detail?.external ? 'external' : 'browser');
+    };
+
+    window.addEventListener('tts-status-changed', handleStatus);
+    return () => window.removeEventListener('tts-status-changed', handleStatus);
+  }, [debugMode]);
+
+  // Handle inner template translations for the final celebration panel
+  const isHindi = uiLanguage === "Devanagari";
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-800 p-6 md:p-10">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Application Header Title Bar */}
+        <header className="mb-5 pb-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Lata Yog Guide
+          </h1>
+        </header>
 
-        {/* --- 1. SETTINGS CARD --- */}
-        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-          <header className="mb-10 border-b border-gray-100 pb-8">
-            <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight">Lata Yog Routine Guide</h1>
-            <p className="mt-4 text-xl text-slate-600">Canvas preview version for testing on desktop web.</p>
-          </header>
-
-          <div className="flex flex-col md:flex-row gap-8 items-end justify-between">
-            <div className="flex-grow flex flex-col md:flex-row gap-8">
-              {/* Routine Picker */}
-              <div className="flex-1 flex flex-col gap-2">
-                <label className="text-lg font-semibold text-slate-700" htmlFor="routineSelect">Choose routine</label>
-                <select
-                  id="routineSelect"
-                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all"
-                  value={chosenRoutineKey}
-                  onChange={(e) => setChosenRoutineKey(e.target.value)}
-                >
-                  <option value="" disabled>Select Routine...</option>
-                  {routineOptions.map(option => (
-                    <option key={option.key} value={option.key}>{option.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* UI Language */}
-              <div className="flex flex-col gap-2">
-                <label className="text-lg font-semibold text-slate-700" htmlFor="uiLang">UI language</label>
-                <select
-                  id="uiLang"
-                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
-                  value={uiLanguage}
-                  onChange={(e) => setUiLanguage(e.target.value)}
-                >
-                  <option value="English">English</option>
-                  <option value="Hindi">Hindi (हिंदी)</option>
-                </select>
-              </div>
-
-              {/* Audio Language */}
-              <div className="flex flex-col gap-2">
-                <label className="text-lg font-semibold text-slate-700" htmlFor="audioLang">Audio language</label>
-                <select
-                  id="audioLang"
-                  className="w-full border-2 border-slate-200 rounded-xl p-4 text-lg bg-white"
-                  value={audioLanguage}
-                  onChange={(e) => setAudioLanguage(e.target.value)}
-                >
-                  <option value="English">English</option>
-                  <option value="Hindi">Hindi (हिंदी)</option>
-                  <option value="Both">Both (Cued)</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Mute Toggle */}
-            <button
-              onClick={() => setIsMuted(!isMuted)}
-              className="flex items-center gap-3 p-4 px-6 border-2 border-slate-300 rounded-2xl bg-white hover:bg-slate-100 active:scale-95 transition-all text-slate-700"
-            >
-              {isMuted ? <VolumeX className="w-6 h-6 text-slate-500" /> : <Volume2 className="w-6 h-6 text-blue-600" />}
-              <span className="text-lg font-medium">{isMuted ? 'Unmute' : 'Mute'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* --- 2. CURRENT ACTIVITY CARD --- */}
-        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-          <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-2xl font-semibold text-slate-600">Current activity</h2>
-            {currentStep?.id && (
-              <span className="text-sm text-gray-500">Step ID: {currentStep.id}</span>
-            )}
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            {/* Tiny Media Container: exactly 80x80 pixels (~2cm) */}
-            <div className="bg-slate-100 rounded-2xl flex-shrink-0 flex items-center justify-center w-20 h-20 border border-slate-200 shadow-inner overflow-hidden">
-              <img
-                src={currentStep?.pictureUrl || '/assets/images/default.jpg'}
-                alt={currentStep?.stepKey || 'Step placeholder'}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.onerror = null; 
-                  e.target.src = '/assets/images/default.jpg';
-                }}
-              />
-            </div>
-
-            {/* Step Details (Text Areas) */}
-            <div className="flex flex-col gap-6 w-full">
-              <h2 className="text-5xl font-bold text-slate-950 leading-tight">
-                {currentStep?.names?.english || currentStep?.names?.devanagari || "Choose a Routine to Start"}
-              </h2>
-              {currentStep?.description && (
-                <p className="text-xl text-slate-600">{currentStep.description}</p>
-              )}
-              {currentStep?.notes && (
-                <p className="text-lg text-slate-500 italic bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  Notes: {currentStep.notes}
-                </p>
-              )}
-
-              {/* Type and Cautions Section */}
-              <div className="mt-4 space-y-4">
-                <span className="inline-block bg-blue-50 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                  Type: {currentStep?.type || "None"}
-                </span>
-                
-                {/* CAUTION BLOCK */}
-                {currentStep?.caution && (
-                  <div className="bg-amber-50 text-amber-950 border-2 border-amber-200 rounded-2xl p-6 shadow-sm">
-                    <p className="text-lg leading-relaxed italic font-medium">
-                      <strong className="text-amber-900 not-italic">Safety:</strong> {currentStep.caution}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* --- 3. SESSION CONTROLS CARD --- */}
-        <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-            {/* Timer Display */}
-            <div className="flex items-center gap-4 bg-slate-100 p-2 px-6 rounded-full font-mono text-3xl font-medium tabular-nums text-slate-900 shadow-inner">
-              <span className="text-sm font-sans text-slate-600">Timer:</span>
-              <span>{Math.floor(currentStepTimeLeft / 60).toString().padStart(2, '0')}:{(currentStepTimeLeft % 60).toString().padStart(2, '0')}</span>
-            </div>
-
-            {/* Control Buttons Group */}
-            <div className="flex items-center gap-4">
-              {/* Start/Resume */}
-              <button
-                onClick={startTimer}
-                disabled={timerStatus === 'running' || !currentStep}
-                className={`p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold transition-all active:scale-95 ${
-                  timerStatus === 'running'
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                <Play className="w-6 h-6" />
-                {timerStatus === 'paused' ? 'Resume' : 'Start'}
-              </button>
-
-              {/* Pause */}
-              <button
-                onClick={pauseTimer}
-                disabled={timerStatus !== 'running'}
-                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Pause className="w-6 h-6" />
-                Pause
-              </button>
-
-              {/* Complete & Next */}
-              <button
-                onClick={completeAndNext}
-                disabled={!currentStep}
-                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <StepForward className="w-6 h-6" />
-                Complete & Next
-              </button>
-
-              {/* Reset */}
-              <button
-                onClick={resetSession}
-                className="p-4 px-6 rounded-xl flex items-center gap-3 text-lg font-semibold bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-100 shadow-sm transition-all active:scale-95"
-              >
-                <RefreshCw className="w-6 h-6" />
-                Reset
-              </button>
-            </div>
-          </div>
-
-          {/* Progress Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-medium text-slate-700">Overall Progress</span>
-              <span className="text-xl font-bold text-blue-600">
-                {(totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0).toFixed(0)}%
-              </span>
-            </div>
+        {/* Master Responsive Grid Matrix Layout */}
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-start">
+          
+          {/* Main Control Panel (Interactive Panels & Active Elements) */}
+          <div className="flex-1 w-full flex flex-col gap-4">
             
-            {/* The Progress Bar Container */}
-            <div className="w-full bg-slate-100 rounded-full h-5 relative border border-slate-200 shadow-inner overflow-hidden">
-              <div
-                className="absolute top-0 left-0 bottom-0 bg-blue-500 rounded-full transition-all duration-500 ease-out h-full"
-                style={{ width: `${totalStepsInRoutine > 0 ? ((completedSteps / totalStepsInRoutine) * 100) : 0}%` }}
-              ></div>
-            </div>
+            <SettingsCard 
+              routines={routines} 
+              selectedRoutineId={selectedRoutineId} 
+              selectRoutine={selectRoutine} 
+              uiLanguage={uiLanguage} 
+              setUiLanguage={setUiLanguage} 
+              audioLanguage={audioLanguage} 
+              setAudioLanguage={setAudioLanguage} 
+              isMuted={isMuted} 
+              setIsMuted={setIsMuted}
+            />
 
-            {/* Session Stats */}
-            <div className="flex items-center justify-between text-lg text-slate-600 mt-3 pt-3 border-t border-gray-100">
-              <p>Completed: {completedSteps} / {totalStepsInRoutine}</p>
-              {currentStep && (
-                <p>Target duration: {currentStepTimeTotal}s / step type: {currentStep.type}</p>
-              )}
-            </div>
+            {/* DYNAMIC LIFECYCLE GATEWAY: Switch views cleanly upon session completion */}
+            {isRoutineComplete ? (
+              <div className="w-full bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 md:p-8 text-white shadow-xl flex flex-col items-center text-center gap-5 border border-blue-500 animate-fadeIn relative overflow-hidden">
+                
+                {/* Decorative Background Accents */}
+                <div className="absolute top-[-20%] left-[-10%] w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-amber-300 shadow-md backdrop-blur-sm border border-white/20 animate-bounce">
+                  <Award className="w-10 h-10" />
+                </div>
+
+                <div className="flex flex-col gap-1.5 max-w-md">
+                  <h2 className="text-2xl md:text-3xl font-black tracking-tight flex items-center justify-center gap-2">
+                    <Sparkles className="w-5 h-5 text-amber-300 fill-current" />
+                    <span>{isHindi ? "हरि ओम्! पूर्ण हुआ!" : "Hari Om! Complete!"}</span>
+                    <Sparkles className="w-5 h-5 text-amber-300 fill-current" />
+                  </h2>
+                  <p className="text-sm font-medium text-blue-100 leading-relaxed">
+                    {isHindi 
+                      ? "आपने सफलतापूर्वक पूरा अभ्यास क्रम समाप्त कर लिया है। आपका मन केंद्रित है, श्वसन गहरा है, और आपकी प्राण ऊर्जा पूरी तरह से संतुलित है।" 
+                      : "You have successfully completed the entire session pathway. Your mind is focused, your breathing is deep, and your energy channels are completely aligned."}
+                  </p>
+                </div>
+
+                <hr className="w-full max-w-xs border-white/20 my-1" />
+
+                {/* CONGRATS REDIRECT ROUTINE CALL TO ACTION SELECTOR */}
+                <div className="w-full max-w-xs flex flex-col gap-2">
+                  <label className="text-[10px] uppercase font-black tracking-widest text-blue-200 flex items-center justify-center gap-1">
+                    <Compass className="w-3 h-3" />
+                    <span>{isHindi ? "अगला अभ्यास मार्ग चुनें" : "Select Next Practice Journey"}</span>
+                  </label>
+                  <select
+                    value={selectedRoutineId || ""}
+                    onChange={(e) => selectRoutine(e.target.value)}
+                    className="w-full border border-white/20 rounded-xl p-2.5 bg-white/10 text-white text-sm font-bold focus:ring-2 focus:ring-white focus:bg-slate-900 outline-none transition-all cursor-pointer text-center"
+                  >
+                    {routines.map((routine) => (
+                      <option key={routine.id} value={routine.id} className="text-slate-800 font-semibold">
+                        {routine.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={resetTimer}
+                  className="mt-2 flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-blue-700 hover:bg-blue-50 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md transform active:scale-95"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 stroke-[3]" />
+                  <span>{isHindi ? "यह अभ्यास पुनः प्रारंभ करें" : "Restart Current Flow"}</span>
+                </button>
+
+              </div>
+            ) : (
+              /* STANDARD WORKING LAYOUT VIEWPORTS */
+              <>
+                <CurrentActivityCard 
+                  currentStep={currentStep} 
+                  isPreparing={isPreparing} 
+                  uiLanguage={uiLanguage} // Forwards state parameter to toggle main text nodes dynamically
+                  timeLeft={timeLeft}
+                  currentStepDuration={currentStepDuration}
+                />
+
+                <SessionControlsCard 
+                  currentStep={currentStep} 
+                  timerStatus={timerStatus} 
+                  timeLeft={timeLeft} 
+                  isPreparing={isPreparing}
+                  currentStepDuration={currentStepDuration}
+                  repTelemetry={repTelemetry} 
+                  startTimer={startTimer} 
+                  pauseTimer={pauseTimer} 
+                  resetTimer={resetTimer} 
+                  completeAndNext={completeAndNext} 
+                  prevStep={prevStep} 
+                  totalSteps={steps.length} 
+                  currentStepIndex={currentStepIndex}
+                />
+              </>
+            )}
+
           </div>
-        </div>
 
+          {/* Sidebar Area (Stationary List Sequence Tracker) */}
+          <div className="w-full lg:w-1/3 lg:sticky lg:top-8 flex-shrink-0">
+            <RoutinePlaylistCard 
+              steps={steps} 
+              currentStepIndex={currentStepIndex} 
+              uiLanguage={uiLanguage} // Forwards state parameter to toggle sidebar itinerary columns
+            />
+          </div>
+
+        </div>
+      </div>
+      <div className="fixed bottom-3 right-3 z-50 select-none pointer-events-none">
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+          <span className="font-semibold">{__DEPLOY_DATE__}</span>
+          {debugMode && (
+            <span className="text-slate-500">TTS: {ttsStatus === 'external' ? 'External' : ttsStatus === 'browser' ? 'Browser' : 'Unknown'}</span>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;

@@ -6,10 +6,6 @@ const deployDate = process.env.VITE_DEPLOY_DATE || new Date().toLocaleDateString
 
 export default defineConfig({
   plugins: [react()],
-  
-  // IMPORTANT: Replace 'YOUR-REPO-NAME' with your exact GitHub repository name!
-  // Example: if your repo is github.com/username/lata-yog, make this '/lata-yog/'
-  // base: '/YOUR-REPO-NAME/', 
   base: '/V5GeminiYogguide/',
   resolve: {
     alias: {
@@ -18,5 +14,10 @@ export default defineConfig({
   },
   define: {
     __DEPLOY_DATE__: JSON.stringify(deployDate)
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/setupTests.js'
   }
 });

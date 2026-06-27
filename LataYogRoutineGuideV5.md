@@ -15,17 +15,16 @@ Unlike previous versions with heavily hard-coded routine steps, v5 utilizes a **
 ## 1. Tech Stack
 
 Use:
-* React
+* React 18
 * Vite
 * Tailwind CSS
-* Framer Motion
 * lucide-react
 
 Package dependencies must include:
 * `react`, `react-dom`
 * `@vitejs/plugin-react`, `vite`
 * `tailwindcss`, `postcss`, `autoprefixer`
-* `framer-motion`, `lucide-react`
+* `lucide-react`
 
 Use:
 * Functional React components and modern hooks
@@ -50,11 +49,20 @@ src/
     ControlsPanel.jsx
     RoutineStepList.jsx
     (Add others as needed: IllustrationPanel.jsx, etc.)
-  data/
-    stepNames.js      <-- Centralized Database (holds names, types, reps, timings, cautions)
-    routines.js       <-- Master Playlist Factory (loops through stepKeys)
-  lib/
-    audio.js          <-- Contains speech synthesis logic and cue-only overrides
-  App.jsx             <-- Main integration component
+  App.jsx
   main.jsx
   styles.css
+  components/
+    BreathSubstepTimer.jsx
+    CurrentActivityCard.jsx
+    PranayamaProgressRings.jsx
+    RoutinePlaylistCard.jsx
+    SessionControlsCard.jsx
+    SettingsCard.jsx
+  data/
+    routines.js       <-- Master Playlist Factory (loops through stepKeys)
+    stepNames.js      <-- Centralized Database (holds names, types, reps, timings, cautions)
+  hooks/
+    useRoutineRunner.js
+  lib/
+    audio.js          <-- Contains speech synthesis logic and cue-only overrides
