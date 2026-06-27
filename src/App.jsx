@@ -202,7 +202,7 @@ const App = () => {
       </div>
       <div className="fixed bottom-3 right-3 z-50 select-none pointer-events-none">
         <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
-          <span className="font-semibold">v8.1</span>
+          <span className="font-semibold">{new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}</span>
           {debugMode && (
             <span className="text-slate-500">TTS: {ttsStatus === 'external' ? 'External' : ttsStatus === 'browser' ? 'Browser' : 'Unknown'}</span>
           )}
