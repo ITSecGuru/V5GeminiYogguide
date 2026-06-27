@@ -99,7 +99,7 @@ export const stepDatabase = {
     caution: "Coordinate breathing with the leg movement.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-5": { 
-    names: { devanagari: "योगिक जॉगिंग स्थिति 5", roman: "Yogic Jogging Sthiti 5", english: "Yogic Jogging Position 5" },
+    names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom-test", english: "Anulom Vilom-test" },
     category: "Warm Up",
     type: "reps", duration: null, reps: 40, timePerRep: 24, prepTime: 5, hasSides: false,
     breathPattern: "Cycle: Purak 4s, Rechak 8s, Purak 4s, Rechak 8s. Repeat for 40 cycles (~16 minutes).",

@@ -143,24 +143,19 @@ export const playAudioPrompt = (step, language = 'en', omitStepName = false) => 
 
   if (omitStepName) {
     promptText = language === 'hi' ? (step.type === 'reps' ? 'दोहराएं' : 'समय शुरू') : (step.type === 'reps' ? 'Repeat' : 'Time');
+  } else if (language === 'hi') {
+    promptText = step.speech?.hi || names.devanagari || names.english || 'शुरू करें';
   } else {
-    const devanagariPriority = names.devanagari || step.speech?.hi;
-    if (devanagariPriority) {
-      promptText = devanagariPriority;
-    } else if (language === 'hi') {
-      promptText = step.speech?.hi || names.english || 'शुरू करें';
-    } else {
-      promptText = step.speech?.en || names.english || 'Begin.';
-    }
+    promptText = step.speech?.en || names.english || names.devanagari || 'Begin.';
   }
 
-    // Log prompt selection; include stepId only when prompt text is not Devanagari
-    if (isTtsDebugEnabled()) {
-      const isDeva = isDevanagariText(promptText);
-      const promptEvt = { type: 'prompt', text: promptText, language };
-      if (!isDeva && step && step.id) promptEvt.stepId = step.id;
-      logTtsEvent(promptEvt);
-    }
+  // Log prompt selection; include stepId only when prompt text is not Devanagari
+  if (isTtsDebugEnabled()) {
+    const isDeva = isDevanagariText(promptText);
+    const promptEvt = { type: 'prompt', text: promptText, language };
+    if (!isDeva && step && step.id) promptEvt.stepId = step.id;
+    logTtsEvent(promptEvt);
+  }
 
-    speakText(promptText, language);
+  speakText(promptText, language);
 };

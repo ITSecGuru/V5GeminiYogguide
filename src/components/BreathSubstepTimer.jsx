@@ -43,7 +43,8 @@ const BreathSubstepTimer = ({ pranayamSteps = [], uiLanguage = 'English', timeLe
     previousIndex.current = activeIndex;
     const label = current.names?.[uiLanguage === 'Devanagari' ? 'devanagari' : 'english'] || current.names?.english || '';
     if (label) {
-      try { tts.speak(label); } catch (e) {}
+      const lang = /[\u0900-\u097F]/.test(label) ? 'hi-IN' : 'en-US';
+      try { tts.speak(label, lang); } catch (e) {}
       if (isTtsDebugEnabled()) logTtsEvent({ type: 'substep', label, duration: current.duration });
     }
   }, [activeIndex, current, pranayamSteps, uiLanguage]);

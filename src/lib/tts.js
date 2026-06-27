@@ -1,11 +1,11 @@
 import ttsDebug from './ttsDebug.js';
 
-const isBrowser = typeof window !== 'undefined' && typeof window.speechSynthesis !== 'undefined';
+const isBrowser = () => typeof window !== 'undefined' && typeof window.speechSynthesis !== 'undefined';
 
 export function speak(text, lang = 'en-US') {
   try {
     ttsDebug.logTtsEvent({ type: 'prompt', text, lang });
-    if (!isBrowser) return;
+    if (!isBrowser()) return;
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang;
     window.speechSynthesis.cancel();
