@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { Check, PlayCircle } from 'lucide-react';
+import { getStepDisplayName, getStepRomanName, getStepSecondaryName } from '../lib/stepMetadata.js';
 
 export default function RoutinePlaylistCard({ steps, currentStepIndex, uiLanguage }) {
   const isHindi = uiLanguage === "Devanagari";
@@ -53,17 +54,17 @@ export default function RoutinePlaylistCard({ steps, currentStepIndex, uiLanguag
               <div className="flex-1 min-w-0 flex flex-col">
                 {/* 1. Main Display Row: Changes primary weight based on uiLanguage */}
                 <span className={`text-sm font-bold block truncate leading-tight ${isActive ? 'text-blue-900' : 'text-slate-800'}`}>
-                  {isHindi ? (step.names?.devanagari || step.name) : (step.names?.english || step.name)}
+                  {getStepDisplayName(step, uiLanguage)}
                 </span>
                 
                 {/* 2. Roman Phonetic Script */}
                 <span className="text-xs font-medium text-slate-500 italic truncate tracking-wide mt-0.5">
-                  {step.names?.roman || ""}
+                  {getStepRomanName(step)}
                 </span>
                 
                 {/* 3. Secondary Display Row */}
                 <span className="text-[11px] font-medium text-slate-400 truncate uppercase tracking-tight mt-0.5">
-                  {isHindi ? step.names?.english : step.names?.devanagari}
+                  {getStepSecondaryName(step, uiLanguage)}
                 </span>
               </div>
 

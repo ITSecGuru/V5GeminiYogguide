@@ -9,6 +9,11 @@ const BREATH_ANIMATIONS = {
     ringClass: 'border-slate-300 opacity-30 animate-anulom-ring',
     label: 'Anulom Vilom'
   },
+  'bhastrika': {
+    bodyClass: 'bg-orange-100 border-orange-200 text-orange-800 animate-bhastrika',
+    ringClass: 'border-orange-200 opacity-40 animate-bhastrika-ring',
+    label: 'Bhastrika'
+  },
   'bhramari': {
     bodyClass: 'bg-violet-100 border-violet-200 text-violet-700 animate-bhramari',
     ringClass: 'border-violet-200 opacity-35 animate-bhramari-ring',

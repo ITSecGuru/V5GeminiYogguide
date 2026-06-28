@@ -1,4 +1,5 @@
 import { isTtsDebugEnabled, logTtsEvent } from './ttsDebug';
+import { getAudioPromptText } from './stepMetadata';
 
 const getBestVoice = (voices, preferredLangs) => {
   for (const lang of preferredLangs) {
@@ -138,16 +139,7 @@ export const speakText = (text, language = 'en', meta = {}) => {
 
 export const playAudioPrompt = (step, language = 'en', omitStepName = false) => {
   window.speechSynthesis?.cancel();
-  const names = step.names || {};
-  let promptText = '';
-
-  if (omitStepName) {
-    promptText = language === 'hi' ? (step.type === 'reps' ? 'दोहराएं' : 'समय शुरू') : (step.type === 'reps' ? 'Repeat' : 'Time');
-  } else if (language === 'hi') {
-    promptText = step.speech?.hi || names.devanagari || names.english || 'शुरू करें';
-  } else {
-    promptText = step.speech?.en || names.english || names.devanagari || 'Begin.';
-  }
+  const promptText = getAudioPromptText(step, language, omitStepName);
 
   // Log prompt selection; include stepId only when prompt text is not Devanagari
   if (isTtsDebugEnabled()) {

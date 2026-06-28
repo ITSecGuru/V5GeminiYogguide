@@ -28,6 +28,27 @@ A modern, responsive React web application for guided yoga routines, breathwork,
 - `npm run validate:data` — validate `src/data/stepNames.js` and routine integrity
 - `npm run deploy` — deploy `dist` to GitHub Pages
 
+## Recent Changes
+- Added `src/lib/stepMetadata.js` to centralize step display name, breath animation, and audio prompt resolution.
+- Updated `src/components/CurrentActivityCard.jsx` and `src/components/RoutinePlaylistCard.jsx` to use centralized metadata lookup instead of hardcoded labels.
+- Updated `src/components/BreathSubstepTimer.jsx` to support consistent substep timing and fallback internal elapsed time.
+- Updated `src/lib/audio.js` to use metadata-driven prompt text selection and better support English/Devanagari switch.
+- Added `Bhastrika` animation styling and keyframes to `src/styles.css`.
+- Enhanced `src/data/stepNames.js` with warm-up steps mapped to pranayama animation metadata (`bhastrika`, `bhramari`, `anulom-vilom`).
+
+## Automation & Validation
+- Confirmed build succeeds with `npm run build`.
+- Confirmed unit tests pass with `npm test`.
+- Confirmed step database validation runs with `npm run validate:data`.
+- Note: `npm run lint` is declared in `package.json`, but ESLint requires a configuration file in the repo to execute successfully.
+
+## Verification Checklist
+- [x] Production build compiles cleanly
+- [x] Existing Vitest suite passes
+- [x] Step metadata validation script executes successfully
+- [ ] Browser preview/manual UI verification still pending
+- [ ] External TTS playback and animation rendering should be validated in-browser
+
 ## Notes
 - `vite.config.js` sets the base path to `/V5GeminiYogguide/` for GitHub Pages.
 - Core application logic lives in `src/App.jsx`, `src/hooks/useRoutineRunner.js`, and `src/components/CurrentActivityCard.jsx`.

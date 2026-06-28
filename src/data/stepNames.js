@@ -42,6 +42,11 @@ export const pranayamNames = {
     transliteration: "Kapal Bhati",
     english: "Skull-Shining Breath"
   },
+  "bhastrika": {
+    devanagari: "भस्त्रिका",
+    transliteration: "Bhastrika",
+    english: "Bellows Breath"
+  },
   "bhramari": {
     devanagari: "भ्रामरी",
     transliteration: "Bhramari",
@@ -80,23 +85,49 @@ export const stepDatabase = {
   "yogic-jogging-position-2": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 2", roman: "Yogic Jogging Sthiti 2", english: "Yogic Jogging Position 2" },
     category: "Warm Up",
-    type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Fast bellows-style breathing to match the rhythmic warm-up motion.",
+    breathAnimationKey: "bhastrika",
+    breathCycleDuration: 10,
+    pranayamSteps: [
+      { names: { english: "Inhale", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 5 },
+      { names: { english: "Exhale", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 5 }
+    ],
+    benefits: "Warms the lungs and energizes the body while coordinating breath with movement.",
     testMode: true,
-    caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Keep the breath deep and steady but controlled, and stop if you feel dizzy.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-3": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 3", roman: "Yogic Jogging Sthiti 3", english: "Yogic Jogging Position 3" },
     category: "Warm Up",
-    type: "time", duration: 10, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 10, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "A calming humming-release breath to anchor the warm-up with Bhramari-style exhalation.",
+    breathAnimationKey: "bhramari",
+    breathCycleDuration: 22,
+    pranayamSteps: [
+      { names: { english: "Inhale", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 7 },
+      { names: { english: "Bhramari", devanagari: "भ्रामरी", transliteration: "Bhramari" }, action: "exhale", duration: 15 }
+    ],
+    benefits: "Promotes calm, reduces stress, and tests the humming breath animation flow.",
     testMode: true,
-    caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Keep the jaw and throat soft while humming." , audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-4": { 
     names: { devanagari: "योगिक जॉगिंग स्थिति 4", roman: "Yogic Jogging Sthiti 4", english: "Yogic Jogging Position 4" },
     category: "Warm Up",
-    type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Alternate nostalgia with a long inhale and exhale cycle, matching the step rhythm.",
+    breathAnimationKey: "anulom-vilom",
+    breathCycleDuration: 24,
+    pranayamSteps: [
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 },
+      { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+      { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 }
+    ],
+    benefits: "Tests alternate nostril animation timing while maintaining a dynamic warm-up cadence.",
     testMode: true,
-    caution: "Coordinate breathing with the leg movement.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Coordinate breath with each repetition, and keep the movement steady.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "yogic-jogging-position-5": { 
     names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom-test", english: "Anulom Vilom-test" },
@@ -221,14 +252,31 @@ export const stepDatabase = {
   "bhastrika-pranayama": { 
     names: { devanagari: "भस्त्रिका प्राणायाम", roman: "Bhastrika Pranayam", english: "Bellows Breath" },
     category: "Pranayama",
-    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Rapid, forceful nasal inhalations and exhalations. Keep the abdomen active, the throat open, and the spine straight.",
+    breathAnimationKey: "bhastrika",
+    breathCycleDuration: 10,
+    pranayamSteps: [
+      { names: { english: "Inhale", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 5 },
+      { names: { english: "Exhale", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 5 }
+    ],
+    recommendedCycles: 30,
+    benefits: "Boosts lung capacity, energizes the body, and clears respiratory passages.",
     caution: "Avoid if you have high blood pressure or heart conditions.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "kapal-bhati": { 
     names: { devanagari: "कपालभाति प्राणायाम", roman: "Kapal Bhati Pranayam", english: "Skull-Shining Breath" },
     category: "Pranayama",
-    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
-    caution: "Avoid for 6–12 months after surgery. Hypertension users should practice gently.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Automatic inhale, followed by a two-second forceful exhale. Control the exhale only, keeping the abdomen engaged.",
+    breathAnimationKey: "kapal-bhati",
+    breathCycleDuration: 2,
+    pranayamSteps: [
+      { names: { english: "Exhale", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 2 }
+    ],
+    recommendedCycles: 150,
+    benefits: "Cleanses the respiratory passages, tones abdominal muscles, and energizes the body.",
+    caution: "Avoid kapal bhati if you are pregnant, have high blood pressure, or recent abdominal surgery.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "anulom-vilom": { 
     names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom", english: "Alternate Nostril Breathing" },
@@ -265,7 +313,16 @@ export const stepDatabase = {
   "bhramari": { 
     names: { devanagari: "भ्रामरी प्राणायाम", roman: "Bhramari Pranayam", english: "Humming Bee Breath" },
     category: "Pranayama",
-    type: "reps", duration: null, reps: 3, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "time", duration: 240, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Inhale quietly through the nose, then exhale slowly while humming like a bee. Keep the jaw relaxed and the throat soft.",
+    breathAnimationKey: "bhramari",
+    breathCycleDuration: 22,
+    pranayamSteps: [
+      { names: { english: "Inhale", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 7 },
+      { names: { english: "Bhramari", devanagari: "भ्रामरी", transliteration: "Bhramari" }, action: "exhale", duration: 15 }
+    ],
+    recommendedCycles: 20,
+    benefits: "Calms the mind, reduces stress, and soothes the nervous system.",
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "udgeeth-pranayama": { 
@@ -283,8 +340,16 @@ export const stepDatabase = {
   "om-pranav": { 
     names: { devanagari: "ॐ प्रणव", roman: "Om Pranav", english: "Om Chanting" },
     category: "Pranayama",
-    type: "reps", duration: null, reps: 3, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
-    caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    type: "reps", duration: null, reps: 3, timePerRep: null, prepTime: 5, hasSides: false,
+    breathPattern: "Inhale quietly for 7 seconds, then exhale slowly while chanting Om for 15 seconds.",
+    breathAnimationKey: "bhramari",
+    breathCycleDuration: 22,
+    pranayamSteps: [
+      { names: { english: "Inhale", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 7 },
+      { names: { english: "Om Chant", devanagari: "ॐ प्रणव", transliteration: "Om Pranav" }, action: "exhale", duration: 15 }
+    ],
+    benefits: "Calms the mind, harmonizes breath and sound, and energizes the nervous system.",
+    caution: "Keep the chant gentle and avoid forcing the voice.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "diaphragmatic-breath": { 
     names: { devanagari: "उदर श्वसन", roman: "Udar Shwasan", english: "Diaphragmatic Breath" },
