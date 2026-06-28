@@ -27,8 +27,23 @@ const getSubstepFromElapsed = (pranayamSteps = [], elapsedStepTime = 0) => {
   return { activeIndex, current, remaining };
 };
 
-const BreathSubstepTimer = ({ pranayamSteps = [], uiLanguage = 'English', timeLeft = 0, currentStepDuration = 0 }) => {
-  const elapsedStepTime = Math.max(0, (typeof currentStepDuration === 'number' ? currentStepDuration : 0) - (typeof timeLeft === 'number' ? timeLeft : 0));
+const BreathSubstepTimer = ({ pranayamSteps = [], uiLanguage = 'English', timeLeft = 0, currentStepDuration = 0, isKapalBhati = false }) => {
+  const [internalElapsedTime, setInternalElapsedTime] = React.useState(0);
+  const shouldUseInternalTimer = (typeof currentStepDuration !== 'number' || typeof timeLeft !== 'number' || (currentStepDuration === 0 && timeLeft === 0));
+
+  React.useEffect(() => {
+    if (!shouldUseInternalTimer) return undefined;
+    const interval = window.setInterval(() => {
+      setInternalElapsedTime((prev) => prev + 1);
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [shouldUseInternalTimer]);
+
+  const elapsedStepTime = shouldUseInternalTimer
+    ? internalElapsedTime
+    : Math.max(0, (typeof currentStepDuration === 'number' ? currentStepDuration : 0) - (typeof timeLeft === 'number' ? timeLeft : 0));
+
   const { activeIndex, current, remaining } = useMemo(
     () => getSubstepFromElapsed(pranayamSteps, elapsedStepTime),
     [JSON.stringify(pranayamSteps), elapsedStepTime]
@@ -37,7 +52,7 @@ const BreathSubstepTimer = ({ pranayamSteps = [], uiLanguage = 'English', timeLe
   const previousIndex = useRef(activeIndex);
 
   useEffect(() => {
-    if (!pranayamSteps || pranayamSteps.length === 0) return;
+    if (!pranayamSteps || pranayamSteps.length === 0 || isKapalBhati) return;
     if (previousIndex.current === activeIndex) return;
 
     previousIndex.current = activeIndex;
@@ -49,12 +64,17 @@ const BreathSubstepTimer = ({ pranayamSteps = [], uiLanguage = 'English', timeLe
     }
   }, [activeIndex, current, pranayamSteps, uiLanguage]);
 
-  const displayName = uiLanguage === 'Devanagari' ? current.names?.devanagari : current.names?.english || current.names?.transliteration || '';
+  const displayName = isKapalBhati
+    ? (uiLanguage === 'Devanagari' ? 'बीप' : 'Beep')
+    : (uiLanguage === 'Devanagari' ? current.names?.devanagari : current.names?.english || current.names?.transliteration || '');
+  const displayDetail = isKapalBhati
+    ? `${Math.ceil(remaining)}s`
+    : (current.action ? `${current.action.toUpperCase()} • ${Math.ceil(remaining)}s` : `${Math.ceil(remaining)}s`);
 
   return (
     <div className="mt-2 text-sm">
       <div className="font-semibold text-slate-700">{displayName}</div>
-      <div className="text-xs text-slate-500">{current.action ? `${current.action.toUpperCase()} • ${Math.ceil(remaining)}s` : `${Math.ceil(remaining)}s`}</div>
+      <div className="text-xs text-slate-500">{displayDetail}</div>
     </div>
   );
 };

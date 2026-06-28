@@ -33,4 +33,15 @@ describe('BreathSubstepTimer', () => {
     expect(screen.getByText(/Rechak/)).toBeTruthy();
     expect(screen.getByText(/EXHALE.*1s/i)).toBeTruthy();
   });
+
+  it('shows a simple beep prompt for kapalbhati instead of an exhale label', () => {
+    const steps = [
+      { names: { english: 'Exhale', devanagari: 'रेचक' }, action: 'exhale', duration: 2 }
+    ];
+
+    render(<BreathSubstepTimer pranayamSteps={steps} uiLanguage="English" isKapalBhati />);
+
+    expect(screen.getByText(/Beep/i)).toBeTruthy();
+    expect(screen.queryByText(/EXHALE/i)).toBeNull();
+  });
 });

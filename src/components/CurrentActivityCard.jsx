@@ -6,8 +6,13 @@
 
 import React from 'react';
 import { AlertTriangle, Clock } from 'lucide-react';
-import BREATH_ANIMATIONS from '../lib/breathAnimations.js';
-import { pranayamNames } from '../data/stepNames.js';
+import {
+  getBreathAnimation,
+  getBreathPatternText,
+  getStepDisplayName,
+  getStepRomanName,
+  getStepSecondaryName
+} from '../lib/stepMetadata.js';
 import BreathSubstepTimer from './BreathSubstepTimer.jsx';
 import PranayamaProgressRings from './PranayamaProgressRings.jsx';
 
@@ -24,19 +29,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
   const isRepsType = currentStep.type === 'reps';
   const isHindi = uiLanguage === "Devanagari";
 
-  const breathAnimation = (() => {
-    const animationKey = currentStep.breathAnimationKey || currentStep.stepKey || 'default';
-    const stepAnimation = BREATH_ANIMATIONS[animationKey] || BREATH_ANIMATIONS.default;
-    const pranayamMetadata = pranayamNames[currentStep.breathAnimationKey || currentStep.stepKey];
-    const localizedLabel = isHindi
-      ? pranayamMetadata?.devanagari || currentStep.names?.devanagari || stepAnimation.label
-      : pranayamMetadata?.english || currentStep.names?.english || stepAnimation.label;
-
-    return {
-      ...stepAnimation,
-      label: localizedLabel
-    };
-  })();
+  const breathAnimation = getBreathAnimation(currentStep, uiLanguage);
 
   return (
     <div className={`bg-white rounded-2xl shadow-sm border ${isPreparing ? 'border-amber-400 shadow-md' : 'border-slate-100'} p-4 md:p-5 mb-3 transition-all duration-300`}>
@@ -81,8 +74,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
         <div className="flex-1 w-full min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-xl font-black text-slate-800 tracking-tight leading-tight">
-              {/* If Hindi UI is selected, highlight the Devanagari string as primary */}
-              {isHindi ? currentStep.names?.devanagari : currentStep.names?.english}
+              {getStepDisplayName(currentStep, uiLanguage)}
             </h2>
             {currentStep.sideIndicator && (
               <span className="px-2 py-0.5 text-[10px] font-black bg-purple-50 text-purple-700 rounded-md border border-purple-200 uppercase tracking-wider">
@@ -93,10 +85,10 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
           
           {/* Sub-titles shift order based on active language focus */}
           <h3 className="text-sm font-semibold text-slate-500 mt-0.5 italic">
-            {currentStep.names?.roman}
+            {getStepRomanName(currentStep)}
           </h3>
           <p className="text-xs font-medium text-slate-400 pb-2 border-b border-slate-100 mt-0.5 uppercase tracking-tight">
-            {isHindi ? currentStep.names?.english : currentStep.names?.devanagari}
+            {getStepSecondaryName(currentStep, uiLanguage)}
           </p>
 
           {/* Practice Type Identifier Badges */}
@@ -136,12 +128,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
                   {isHindi ? `एनिमेशन: ${breathAnimation.label}` : `Animation: ${breathAnimation.label}`}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {currentStep.breathPattern && currentStep.breathPattern.trim() !== ''
-                    ? currentStep.breathPattern
-                    : currentStep.stepKey === 'surya-namaskar'
-                      ? (isHindi ? 'आसन के साथ सांस में समन्वय करें' : 'Sync inhale/exhale with movement')
-                      : (isHindi ? 'धीमा और समान श्वास लें' : 'Breathe slowly and evenly')
-                  }
+                  {getBreathPatternText(currentStep, uiLanguage)}
                 </p>
                 {currentStep.pranayamSteps && currentStep.pranayamSteps.length > 0 && (
                   <div className="mt-3 space-y-3">
@@ -156,6 +143,7 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
                       uiLanguage={uiLanguage}
                       timeLeft={timeLeft}
                       currentStepDuration={currentStepDuration}
+                      isKapalBhati={currentStep.breathAnimationKey === 'kapal-bhati'}
                     />
                   </div>
                 )}

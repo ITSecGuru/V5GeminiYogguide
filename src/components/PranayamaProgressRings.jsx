@@ -69,6 +69,7 @@ const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 
 
   const outerColor = getOuterRingColor(outerProgress);
   const outerBackgroundColor = getOuterRingBackground();
+  const isKapalBhati = step?.breathAnimationKey === 'kapal-bhati';
 
   const innerCompletedColor = getInnerRingColor(1);
   const innerActiveColor = getInnerRingColor(substepFraction);
@@ -115,10 +116,11 @@ const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 
   const circumference = 2 * Math.PI * radius;
   const strokeWidth = 10;
   const dashOffset = clamp(circumference * (1 - outerProgress), 0, circumference);
+  const visualScale = isKapalBhati ? (substepFraction < 0.5 ? 1.04 : 1.16) : coreScale;
 
   return (
     <div className="flex items-center gap-4">
-      <div className="relative w-28 h-28 shrink-0">
+      <div className={`relative ${isKapalBhati ? 'w-36 h-36' : 'w-28 h-28'} shrink-0`}>
         <div className="absolute inset-0 rounded-full bg-slate-100" style={{ boxShadow: 'inset 0 0 0 1px rgba(148, 163, 184, 0.24)' }} />
 
         <svg viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`} className="absolute inset-0 w-full h-full">
@@ -137,13 +139,13 @@ const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 
           />
         </svg>
 
-        <div className="absolute inset-4 rounded-full" style={{ background: `conic-gradient(${innerSegments})` }} />
+        {!isKapalBhati && <div className="absolute inset-5 rounded-full" style={{ background: `conic-gradient(${innerSegments})` }} />}
 
         <div
-          className="absolute inset-8 rounded-full border border-slate-200"
+          className={`absolute ${isKapalBhati ? 'inset-3' : 'inset-7'} rounded-full border border-slate-200`}
           style={{
             backgroundColor: coreColor,
-            transform: `scale(${coreScale})`,
+            transform: `scale(${visualScale})`,
             transition: 'transform 220ms linear'
           }}
         />
