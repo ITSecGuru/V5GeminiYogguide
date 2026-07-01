@@ -6,9 +6,9 @@ A modern, responsive React web application for guided yoga routines, breathwork,
 - React 18 + Vite frontend application
 - Tailwind CSS responsive styling
 - centralized step database in `src/data/stepNames.js`
-- dynamic routine assembly from `src/data/routines.js`
+- dynamic routine assembly from `src/data/routines.js` and step metadata hydration from `src/data/stepNames.js`
 - localized UI and audio prompts for English and Devanagari
-- breath guidance and pranayama progress rendering
+- breath guidance, structured `pranayamSteps`, and pranayama progress rendering
 - step validation for routine and metadata consistency
 - optional GitHub Pages deployment using the `gh-pages` package
 
@@ -30,11 +30,11 @@ A modern, responsive React web application for guided yoga routines, breathwork,
 
 ## Recent Changes
 - Added `src/lib/stepMetadata.js` to centralize step display name, breath animation, and audio prompt resolution.
+- Added `src/components/PranayamaProgressRings.jsx` and `src/components/BreathSubstepTimer.jsx` for structured pranayama progress rendering.
 - Updated `src/components/CurrentActivityCard.jsx` and `src/components/RoutinePlaylistCard.jsx` to use centralized metadata lookup instead of hardcoded labels.
-- Updated `src/components/BreathSubstepTimer.jsx` to support consistent substep timing and fallback internal elapsed time.
 - Updated `src/lib/audio.js` to use metadata-driven prompt text selection and better support English/Devanagari switch.
-- Added `Bhastrika` animation styling and keyframes to `src/styles.css`.
-- Enhanced `src/data/stepNames.js` with warm-up steps mapped to pranayama animation metadata (`bhastrika`, `bhramari`, `anulom-vilom`).
+- Added accurate breath animation timing classes and ring animations to `src/styles.css`.
+- Added `src/data/substepAsanas.js` and enhanced `src/data/stepNames.js` with structured pranayama metadata and cycle duration support.
 
 ## Automation & Validation
 - Confirmed build succeeds with `npm run build`.

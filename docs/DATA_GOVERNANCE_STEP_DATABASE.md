@@ -43,14 +43,22 @@ A typical step entry includes:
 
 ```js
 "anulom-vilom": {
+  names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom", english: "Alternate Nostril Breathing" },
   category: "Pranayama",
   type: "time",
-  duration: 60,
+  duration: 300,
   prepTime: 5,
   hasSides: false,
   breathPattern: "Cycle: Purak 4s, Rechak 8s, Purak 4s, Rechak 8s. Repeat for 40 cycles (~16 minutes).",
   breathAnimationKey: "anulom-vilom",
+  breathCycleDuration: 24,
   recommendedCycles: 40,
+  pranayamSteps: [
+    { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+    { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 },
+    { names: { english: "Purak", devanagari: "पूरक", transliteration: "Purak" }, action: "inhale", duration: 4 },
+    { names: { english: "Rechak", devanagari: "रेचक", transliteration: "Rechak" }, action: "exhale", duration: 8 }
+  ],
   benefits: "Improves breath control and calms the nervous system.",
 }
 ```

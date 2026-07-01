@@ -34,25 +34,25 @@ The underlying mapping logic lives in `src/data/routines.js`, which expands `has
 
 ## BUG-002: Anulom Vilom breathing animation and spec needs completion
 
-**Status:** Open  
+**Status:** Resolved  
 **Priority:** Medium  
 **Area:** UI / Pranayama guidance
 
 ### Description
 
 - `anulom-vilom` should support a full 24-second breathing cycle with four substeps: inhale (Purak), exhale (Rechak), inhale (Purak), exhale (Rechak).
-- The current animation is too short and the step metadata lacks explicit breath cycle guidance.
+- The current animation was too short and the step metadata lacked explicit breath cycle guidance.
 - The card should display both the animation label and a descriptive breath pattern text.
 
-### Expected behaviour
+### Resolution
 
-- `docs/LATA_YOG_FUNCTIONAL_TECHNICAL_SPEC_V8_1.md` documents `anulom-vilom` timing and session guidance.
-- `src/styles.css` should support a 24s `anulom-vilom` animation cycle.
-- `src/data/stepNames.js` should include a clear `breathPattern` string for `anulom-vilom` describing the 4s inhale / 8s exhale phase timing.
+- Updated `src/styles.css` so `anulom-vilom`, `kapal-bhati`, `bhastrika`, and `bhramari` animations use timing durations that match breath cycle metadata.
+- Added explicit `animate-*-ring` classes for ring animations used by breath animation cards.
+- Confirmed the metadata-driven UI now aligns animation timing with defined pranayama cycles.
 
 ### Notes
 
-This entry tracks the remaining Pranayama guidance implementation work for the current application version.
+This issue has been addressed in the current main branch.
 
 ---
 

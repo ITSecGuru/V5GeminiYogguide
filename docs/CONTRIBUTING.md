@@ -23,8 +23,8 @@ Thank you for contributing! This repository uses a data-driven React app archite
 - When adding or changing a step definition, update `src/data/stepNames.js`.
 - Keep step keys unique and consistent across the application.
 - Use `hasSides: true` only for steps that require left/right execution.
-- Provide `breathPattern` and `breathAnimationKey` for pranayama steps when applicable.
-- Consider adding `pranayamSteps` for structured breath cycles and progress ring rendering.
+- Provide `breathPattern`, `breathAnimationKey`, and optional `breathCycleDuration` for pranayama steps when applicable.
+- Consider adding `pranayamSteps` and `recommendedCycles` for structured breath cycles and progress ring rendering.
 - Validate changes with `npm run validate:data`.
 
 ## Testing

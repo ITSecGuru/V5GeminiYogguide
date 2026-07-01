@@ -166,6 +166,46 @@
   animation: pranayama-exhale 8s ease-in-out infinite;
 }
 
+.animate-breath {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-breath-ring {
+  animation: breathe-ring 4s ease-in-out infinite;
+}
+
+.animate-kapal-bhati {
+  animation: kapal-bhati 2s ease-in-out infinite;
+}
+
+.animate-kapal-ring {
+  animation: kapal-ring 2s ease-in-out infinite;
+}
+
+.animate-anulom-vilom {
+  animation: anulom-vilom 24s ease-in-out infinite;
+}
+
+.animate-anulom-ring {
+  animation: anulom-ring 24s ease-in-out infinite;
+}
+
+.animate-bhastrika {
+  animation: bhastrika 10s ease-in-out infinite;
+}
+
+.animate-bhastrika-ring {
+  animation: bhastrika-ring 10s ease-in-out infinite;
+}
+
+.animate-bhramari {
+  animation: bhramari 22s ease-in-out infinite;
+}
+
+.animate-bhramari-ring {
+  animation: bhramari-ring 22s ease-in-out infinite;
+}
+
 .ui-card-surface {
   @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)];
 }

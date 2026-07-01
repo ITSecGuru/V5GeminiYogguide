@@ -28,9 +28,9 @@ This test plan covers the recent feature work completed so far:
 - Start the routine and navigate to each pranayama step
 
 #### Expected
-- `kapal-bhati` shows a yellow/orange breathing badge with the label `Kapal Bhati` and uses the `kapal-bhati` animation
-- `anulom-vilom` shows a slate-style breathing badge with the label `Anulom Vilom` and uses the `anulom-vilom` animation
-- `bhramari` shows a violet breathing badge with the label `Bhramari` and uses the `bhramari` animation
+- `kapal-bhati` shows a yellow/orange breathing badge with the label `Kapal Bhati`, uses the `kapal-bhati` animation, and emits a beep at each substep transition.
+- `anulom-vilom` shows a slate-style breathing badge with the label `Anulom Vilom` and uses a full 24-second alternate nostril animation cycle.
+- `bhramari` shows a violet breathing badge with the label `Bhramari` and uses a 22-second humming breath animation.
 - The breath pattern card displays a matching guidance text for each step
 
 ### 3. Breath Pattern Guidance Card
@@ -41,7 +41,7 @@ This test plan covers the recent feature work completed so far:
 #### Expected
 - Each step displays the breath pattern panel
 - `surya-namaskar` defaults to the motion-sync message when no explicit `breathPattern` is defined
-- `kapal-bhati`, `anulom-vilom`, and `bhramari` show their configured breaths
+- `kapal-bhati`, `anulom-vilom`, and `bhramari` show their configured breaths, structured `pranayamSteps`, and ring progress rendering
 - Animation label text is visible in the card
 
 ### 4. Surya Namaskar Timing Calculation
@@ -90,9 +90,9 @@ This test plan covers the recent feature work completed so far:
 - Verify the control buttons keep strong contrast and distinct color states for Rewind, Reset, Start/Pause, and Next
 
 ## Visual Regression Checklist
-- `kapal-bhati` uses a yellow/orange badge and pulsating inhale/exhale animation
-- `anulom-vilom` uses a horizontal alternate-breath animation style
-- `bhramari` uses a slow violet pulse with a humming-like ring effect
+- `kapal-bhati` uses a yellow/orange badge and rapid 2-second pulse animation
+- `anulom-vilom` uses a full 24-second alternate-breath animation cycle
+- `bhramari` uses a slow violet 22-second pulse with a humming-like ring effect
 - The breath pattern panel explicitly shows `Animation: Kapal Bhati`, `Animation: Anulom Vilom`, or `Animation: Bhramari` for each step
 - Regular steps still show the default blue breathing badge animation
 
