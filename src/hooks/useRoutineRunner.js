@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { routines } from '../data/routines';
+import { getSequenceProgress, getStepCycleDuration, getStepDuration } from '../lib/stepTiming';
 
 const useRoutineRunner = () => {
   const [selectedRoutineId, setSelectedRoutineId] = useState("");
@@ -32,19 +33,6 @@ const useRoutineRunner = () => {
 
   const steps = currentRoutine?.steps || [];
   const currentStep = steps[currentStepIndex];
-
-  const getStepDuration = (step) => {
-    if (!step) return 60;
-    if (step.type === 'time') {
-      return typeof step.duration === 'number' ? step.duration : 60;
-    }
-
-    const reps = typeof step.reps === 'number' ? step.reps : 1;
-    const defaultTimePerRep = step.type === 'sequence' ? 15 : 5;
-    const timePerRep = typeof step.timePerRep === 'number' ? step.timePerRep : defaultTimePerRep;
-
-    return reps * timePerRep;
-  };
 
   const currentStepDuration = getStepDuration(currentStep);
 
@@ -93,10 +81,15 @@ const useRoutineRunner = () => {
       if (isPreparing) {
         setIsPreparing(false);
         if (currentStep) {
-          const duration = typeof currentStep.duration === 'number' ? currentStep.duration : 60;
-          const reps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
-          const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5;
-          setTimeLeft(currentStep.type === 'time' ? duration : reps * timePerRep);
+          const fallbackDuration = typeof currentStep.duration === 'number'
+            ? currentStep.duration
+            : (typeof currentStep.reps === 'number'
+              ? currentStep.reps * (typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : 5)
+              : 60);
+          const resolvedDuration = typeof currentStepDuration === 'number' && currentStepDuration > 0
+            ? currentStepDuration
+            : fallbackDuration;
+          setTimeLeft(resolvedDuration);
         }
       } else {
         nextStepPrepared.current = false;
@@ -111,16 +104,20 @@ const useRoutineRunner = () => {
    */
   const repTelemetry = useMemo(() => {
     if (!currentStep || isPreparing || isRoutineComplete || !['reps', 'sequence'].includes(currentStep.type)) {
-      return { currentRep: 0, totalReps: 0, repsLeft: 0 };
+      return { currentRep: 0, totalReps: 0, repsLeft: 0, currentSubstep: 0, totalSubsteps: 0, substepLabel: '0/0' };
     }
 
-    const totalReps = typeof currentStep.reps === 'number' ? currentStep.reps : 16;
-    const defaultTimePerRep = currentStep.type === 'sequence' ? 15 : 5;
-    const timePerRep = typeof currentStep.timePerRep === 'number' ? currentStep.timePerRep : defaultTimePerRep;
-    const repsLeft = Math.max(0, Math.ceil(timeLeft / timePerRep));
+    const totalReps = typeof currentStep.repeats === 'number'
+      ? currentStep.repeats
+      : (typeof currentStep.reps === 'number' ? currentStep.reps : 1);
+    const cycleDuration = getStepCycleDuration(currentStep);
+    const repsLeft = cycleDuration > 0 ? Math.max(0, Math.ceil(timeLeft / cycleDuration)) : 0;
     const currentRep = Math.max(1, totalReps - repsLeft + 1);
+    const sequenceProgress = currentStep.type === 'sequence'
+      ? getSequenceProgress(currentStep, timeLeft, currentStepDuration)
+      : { currentSubstep: 0, totalSubsteps: 0, substepLabel: '0/0' };
 
-    return { currentRep, totalReps, repsLeft };
+    return { currentRep, totalReps, repsLeft, ...sequenceProgress };
   }, [currentStep, timeLeft, isPreparing, isRoutineComplete]);
 
   const startTimer = () => setTimerStatus('running');

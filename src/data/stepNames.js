@@ -1,3 +1,5 @@
+import { substepAsanaPatterns } from './substepAsanas.js';
+
 /**
  * LATA YOG ROUTINE GUIDE - CENTRALIZED STEP DATABASE (V7 Schema)
  * --------------------------------------------------------------
@@ -232,13 +234,33 @@ export const stepDatabase = {
   "surya-namaskar": { 
     names: { devanagari: "सूर्य नमस्कार", roman: "Surya Namaskar", english: "Sun Salutation" },
     category: "Sequence",
-    type: "sequence", duration: null, reps: 5, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "sequence",
+    duration: 300,
+    reps: 5,
+    repeats: 5,
+    timePerRep: null,
+    prepTime: 5,
+    hasSides: false,
+    breathPattern: "",
+    benefits: "",
+    substepAsanaPatternKey: 'sun-salutation-12-step',
+    substepDuration: 5,
     caution: "Synchronize breath with movement. Avoid if you have high blood pressure.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "mishra-dand": { 
     names: { devanagari: "मिश्र दंड", roman: "Mishra Dand", english: "Mixed Staff / Dynamic Push-up Practice" },
     category: "Drill",
-    type: "reps", duration: null, reps: 3, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "sequence",
+    duration: null,
+    reps: 5,
+    repeats: 5,
+    timePerRep: null,
+    prepTime: 5,
+    hasSides: false,
+    breathPattern: "",
+    benefits: "",
+    substepAsanaPatternKey: 'mishra-dand-3-step',
+    substepDuration: 4,
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "easy-breathing": { 
@@ -434,7 +456,17 @@ export const stepDatabase = {
   "pawanmuktasana": { 
     names: { devanagari: "पवनमुक्तासन", roman: "Pawanmuktasan", english: "Wind-Relieving Pose" },
     category: "Asana",
-    type: "time", duration: 60, reps: null, timePerRep: null, prepTime: 5, hasSides: true, breathPattern: "", benefits: "",
+    type: "sequence",
+    duration: null,
+    reps: 5,
+    repeats: 5,
+    timePerRep: null,
+    prepTime: 5,
+    hasSides: true,
+    breathPattern: "",
+    benefits: "",
+    substepAsanaPatternKey: 'pawanmuktasana-8-step',
+    substepDuration: 4,
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "ardha-halasana": { 

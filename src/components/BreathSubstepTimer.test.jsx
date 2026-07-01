@@ -1,11 +1,22 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { playSimpleBeep } from '../lib/audio.js';
+
+vi.mock('../lib/audio.js', async () => {
+  const actual = await vi.importActual('../lib/audio.js');
+  return {
+    ...actual,
+    playSimpleBeep: vi.fn()
+  };
+});
+
 import BreathSubstepTimer from './BreathSubstepTimer.jsx';
 
 describe('BreathSubstepTimer', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -43,5 +54,20 @@ describe('BreathSubstepTimer', () => {
 
     expect(screen.getByText(/Beep/i)).toBeTruthy();
     expect(screen.queryByText(/EXHALE/i)).toBeNull();
+  });
+
+  it('plays a beep on each kapal bhati substep transition', () => {
+    const steps = [
+      { names: { english: 'Exhale', devanagari: 'रेचक' }, action: 'exhale', duration: 2 },
+      { names: { english: 'Exhale', devanagari: 'रेचक' }, action: 'exhale', duration: 2 }
+    ];
+
+    render(<BreathSubstepTimer pranayamSteps={steps} uiLanguage="English" isKapalBhati />);
+
+    act(() => { vi.advanceTimersByTime(2000); });
+    expect(playSimpleBeep).toHaveBeenCalledTimes(1);
+
+    act(() => { vi.advanceTimersByTime(2000); });
+    expect(playSimpleBeep).toHaveBeenCalledTimes(2);
   });
 });

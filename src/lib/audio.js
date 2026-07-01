@@ -151,3 +151,47 @@ export const playAudioPrompt = (step, language = 'en', omitStepName = false) => 
 
   speakText(promptText, language);
 };
+
+let audioContext = null;
+
+const getAudioContext = () => {
+  if (typeof window === 'undefined') return null;
+
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return null;
+
+  if (!audioContext) {
+    audioContext = new AudioContextClass();
+  }
+
+  return audioContext;
+};
+
+export const playSimpleBeep = async () => {
+  if (typeof window === 'undefined') return;
+
+  const context = getAudioContext();
+  if (!context) return;
+
+  try {
+    if (context.state === 'suspended') {
+      await context.resume();
+    }
+
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
+
+    oscillator.type = 'square';
+    oscillator.frequency.value = 880;
+    gainNode.gain.value = 0.04;
+
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.start();
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.12);
+    oscillator.stop(context.currentTime + 0.12);
+  } catch (error) {
+    console.warn('Simple beep playback failed.', error);
+  }
+};

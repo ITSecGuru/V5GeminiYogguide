@@ -1,4 +1,5 @@
 import React from 'react';
+import { getSubstepTimeline } from '../lib/stepTiming.js';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -29,15 +30,17 @@ const getActionColor = (action) => {
   return '#475569';
 };
 
-const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 0, currentStepDuration = 0 }) => {
-  const pranayamSteps = step.pranayamSteps || [];
-  const cycleDuration = step.breathCycleDuration || getPranayamDuration(pranayamaSteps) || 1;
+const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 0, currentStepDuration = 0, isPreparing = false }) => {
+  const pranayamSteps = getSubstepTimeline(step);
+  const cycleDuration = step.breathCycleDuration || getPranayamDuration(pranayamSteps) || 1;
   const totalCycles = typeof step.recommendedCycles === 'number'
     ? step.recommendedCycles
-    : (typeof step.reps === 'number' ? step.reps : 1);
+    : (typeof step.repeats === 'number' ? step.repeats : (typeof step.reps === 'number' ? step.reps : 1));
 
   // derive elapsed time from the host timer values (keeps UI in sync)
-  const elapsedStepTime = Math.max(0, (typeof currentStepDuration === 'number' ? currentStepDuration : 0) - (typeof timeLeft === 'number' ? timeLeft : 0));
+  const elapsedStepTime = isPreparing
+    ? 0
+    : Math.max(0, (typeof currentStepDuration === 'number' ? currentStepDuration : 0) - (typeof timeLeft === 'number' ? timeLeft : 0));
   const completedCycles = Math.min(totalCycles, Math.floor(elapsedStepTime / cycleDuration));
   const cycleTick = cycleDuration > 0 ? (elapsedStepTime % cycleDuration) : 0;
 
@@ -155,7 +158,16 @@ const PranayamaProgressRings = ({ step = {}, uiLanguage = 'English', timeLeft = 
           <div className="text-sm font-black text-slate-900">{Math.min(totalCycles, completedCycles) + 1}/{totalCycles}</div>
         </div>
       </div>
-      
+
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{substepLabel}</div>
+        <div className="mt-1 text-sm font-semibold text-slate-700">
+          {currentSubstep.names?.english || currentSubstep.names?.roman || currentSubstep.names?.devanagari || currentSubstep.key || 'Step'}
+        </div>
+        <div className="mt-1 text-[11px] font-medium text-slate-500">
+          {currentSubstep.action ? currentSubstep.action.toUpperCase() : (uiLanguage === 'Devanagari' ? 'चरण प्रगति' : 'Step progress')}
+        </div>
+      </div>
     </div>
   );
 };

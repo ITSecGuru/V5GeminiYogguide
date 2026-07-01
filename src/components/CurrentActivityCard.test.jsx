@@ -46,4 +46,26 @@ describe('CurrentActivityCard', () => {
     expect(screen.getByText(/Animation: Easy Breathing/i)).toBeInTheDocument();
     expect(screen.getByText(/Inhale for 4, exhale for 4/i)).toBeInTheDocument();
   });
+
+  it('renders a dual-layer progress monitor for steps with a substep pattern', () => {
+    const step = {
+      ...baseStep,
+      stepKey: 'surya-namaskar',
+      names: {
+        devanagari: 'सूर्य नमस्कार',
+        roman: 'Surya Namaskar',
+        english: 'Sun Salutation'
+      },
+      type: 'sequence',
+      reps: 2,
+      substepDuration: 5,
+      substepAsanaPatternKey: 'sun-salutation-12-step',
+      breathPattern: ''
+    };
+
+    render(<CurrentActivityCard currentStep={step} isPreparing={false} uiLanguage="English" />);
+
+    expect(screen.getByText('Cycle')).toBeInTheDocument();
+    expect(screen.getByText('Substep')).toBeInTheDocument();
+  });
 });

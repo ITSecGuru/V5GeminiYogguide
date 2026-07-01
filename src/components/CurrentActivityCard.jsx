@@ -13,6 +13,7 @@ import {
   getStepRomanName,
   getStepSecondaryName
 } from '../lib/stepMetadata.js';
+import { getSubstepTimeline } from '../lib/stepTiming.js';
 import BreathSubstepTimer from './BreathSubstepTimer.jsx';
 import PranayamaProgressRings from './PranayamaProgressRings.jsx';
 
@@ -30,13 +31,21 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
   const isHindi = uiLanguage === "Devanagari";
 
   const breathAnimation = getBreathAnimation(currentStep, uiLanguage);
+  const substepTimeline = getSubstepTimeline(currentStep);
+  const hasSubstepMonitor = substepTimeline.length > 0;
+  const monitorTitle = hasSubstepMonitor && currentStep.category !== 'Pranayama'
+    ? (isHindi ? 'धारा प्रगति' : 'Flow Progress')
+    : (isHindi ? 'श्वास पैटर्न' : 'Breath Pattern');
+  const monitorSubtitle = hasSubstepMonitor && currentStep.category !== 'Pranayama'
+    ? (isHindi ? 'उप-चरणों के साथ आगे बढ़ें' : 'Advance through substeps')
+    : (isHindi ? `एनिमेशन: ${breathAnimation.label}` : `Animation: ${breathAnimation.label}`);
 
   return (
-    <div className={`bg-white rounded-2xl shadow-sm border ${isPreparing ? 'border-amber-400 shadow-md' : 'border-slate-100'} p-4 md:p-5 mb-3 transition-all duration-300`}>
+    <div className={`bg-white rounded-2xl border ${isPreparing ? 'border-amber-300/80 shadow-[0_10px_35px_rgba(245,158,11,0.16)]' : 'border-slate-200/80 shadow-[0_8px_30px_rgba(15,23,42,0.06)]'} p-4 md:p-5 mb-3 transition-all duration-300`}>
       
       {/* Dynamic Preparation Banners */}
       {isPreparing && (
-        <div className="mb-3 bg-amber-100 text-amber-800 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-2 animate-pulse border border-amber-200">
+        <div className="mb-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-3 py-2 text-xs font-bold text-amber-800 flex items-center gap-2 animate-pulse">
           <Clock className="w-4 h-4 text-amber-700" />
           <span>{isHindi ? "तैयार हो जाइए: स्थिति बदल रही है..." : "GET READY: Changing tracking posture position..."}</span>
         </div>
@@ -112,8 +121,8 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
             )}
           </div>
 
-          {((currentStep.breathPattern && currentStep.breathPattern.trim() !== '') || (currentStep.type === 'time' && currentStep.category === 'Pranayama')) && (
-            <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+          {((currentStep.breathPattern && currentStep.breathPattern.trim() !== '') || (currentStep.type === 'time' && currentStep.category === 'Pranayama') || hasSubstepMonitor) && (
+            <div className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3 shadow-sm">
               <div className="relative flex-shrink-0">
                 <div className={`w-12 h-12 rounded-full ${breathAnimation.bodyClass} flex items-center justify-center font-bold`}>
                   <span>{breathAnimation.label.charAt(0)}</span>
@@ -122,28 +131,30 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-                  {isHindi ? 'श्वास पैटर्न' : 'Breath Pattern'}
+                  {monitorTitle}
                 </p>
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-1">
-                  {isHindi ? `एनिमेशन: ${breathAnimation.label}` : `Animation: ${breathAnimation.label}`}
+                  {monitorSubtitle}
                 </p>
                 <p className="text-sm text-slate-600">
-                  {getBreathPatternText(currentStep, uiLanguage)}
+                  {hasSubstepMonitor ? (currentStep.pranayamSteps?.length > 0 ? getBreathPatternText(currentStep, uiLanguage) : (isHindi ? 'पूरक/रेचक प्रत्येक उप-चरण में वैकल्पिक रूप से आगे बढ़ते हैं' : 'Purak/Rechak alternate with each substep')) : getBreathPatternText(currentStep, uiLanguage)}
                 </p>
-                {currentStep.pranayamSteps && currentStep.pranayamSteps.length > 0 && (
+                {hasSubstepMonitor && (
                   <div className="mt-3 space-y-3">
                     <PranayamaProgressRings
                       step={currentStep}
                       uiLanguage={uiLanguage}
                       timeLeft={timeLeft}
                       currentStepDuration={currentStepDuration}
+                      isPreparing={isPreparing}
                     />
                     <BreathSubstepTimer
-                      pranayamSteps={currentStep.pranayamSteps}
+                      pranayamSteps={substepTimeline}
                       uiLanguage={uiLanguage}
                       timeLeft={timeLeft}
                       currentStepDuration={currentStepDuration}
                       isKapalBhati={currentStep.breathAnimationKey === 'kapal-bhati'}
+                      isPreparing={isPreparing}
                     />
                   </div>
                 )}

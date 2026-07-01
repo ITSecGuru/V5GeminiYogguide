@@ -166,6 +166,30 @@
   animation: pranayama-exhale 8s ease-in-out infinite;
 }
 
+.ui-card-surface {
+  @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)];
+}
+
+.ui-panel-surface {
+  @apply rounded-2xl border border-slate-200/70 bg-slate-50/80 shadow-sm;
+}
+
+.ui-status-pill {
+  @apply rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 shadow-sm;
+}
+
+.ui-progress-track {
+  @apply h-2 w-full overflow-hidden rounded-full bg-slate-200/70 shadow-inner;
+}
+
+.ui-progress-fill {
+  @apply h-full rounded-full transition-all duration-700 ease-out;
+}
+
+.ui-control-button {
+  @apply flex h-[42px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-30;
+}
+
 /* Smooth outer SVG stroke animation for pranayama progress */
 .pranayama-outer-circle {
   transition: stroke-dashoffset 400ms ease, stroke 300ms ease;

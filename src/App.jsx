@@ -16,8 +16,8 @@ import { playAudioPrompt } from './lib/audio';
 
 const App = () => {
   // Shared state parameters for system localization vectors
-  const [uiLanguage, setUiLanguage] = useState("English");
-  const [audioLanguage, setAudioLanguage] = useState("English");
+  const [uiLanguage, setUiLanguage] = useState("Devanagari");
+  const [audioLanguage, setAudioLanguage] = useState("Devanagari");
   const [isMuted, setIsMuted] = useState(false);
   const [ttsStatus, setTtsStatus] = useState('unknown');
   const debugMode = import.meta.env.VITE_TTS_DEBUG === 'true' || import.meta.env.VITE_TTS_DEBUG === true;

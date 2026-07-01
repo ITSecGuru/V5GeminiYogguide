@@ -9,7 +9,19 @@ This test plan covers the recent feature work completed so far:
 
 ## Areas to Test
 
-### 1. Breath Animation Display
+### 1. Default Language and Audio Settings
+
+#### Steps
+- Launch the app fresh in a browser session
+- Observe the initial display and audio language settings
+
+#### Expected
+- Display language defaults to `Devanagari`
+- Audio language defaults to `Devanagari`
+- The main activity card and routine playlist render in Devanagari-first text by default
+- Audio guidance uses the Hindi voice path by default
+
+### 2. Breath Animation Display
 
 #### Steps
 - Launch the app and select a routine containing `kapal-bhati`, `anulom-vilom`, or `bhramari`
@@ -21,7 +33,7 @@ This test plan covers the recent feature work completed so far:
 - `bhramari` shows a violet breathing badge with the label `Bhramari` and uses the `bhramari` animation
 - The breath pattern card displays a matching guidance text for each step
 
-### 2. Breath Pattern Guidance Card
+### 3. Breath Pattern Guidance Card
 
 #### Steps
 - Open the app and go to `easy-breathing`, `diaphragmatic-breath`, `surya-namaskar`, `kapal-bhati`, `anulom-vilom`, and `bhramari`
@@ -32,7 +44,7 @@ This test plan covers the recent feature work completed so far:
 - `kapal-bhati`, `anulom-vilom`, and `bhramari` show their configured breaths
 - Animation label text is visible in the card
 
-### 3. Surya Namaskar Timing Calculation
+### 4. Surya Namaskar Timing Calculation
 
 #### Steps
 - Select a routine containing `surya-namaskar`
@@ -45,7 +57,7 @@ This test plan covers the recent feature work completed so far:
 - The progress bar in `SessionControlsCard` should reflect the full sequence duration
 - The step should auto-advance correctly after the countdown ends
 
-### 4. Sequence & Reps Progress Display
+### 5. Sequence & Reps Progress Display
 
 #### Steps
 - Start a step with `type: sequence` or `type: reps`
@@ -56,7 +68,7 @@ This test plan covers the recent feature work completed so far:
 - `reps` step shows `Rep X of Y (Z Left)` while running
 - Both use the correct computed duration for progress math
 
-### 5. App State and Navigation
+### 6. App State and Navigation
 
 #### Steps
 - Switch routines while the timer is idle
@@ -72,6 +84,10 @@ This test plan covers the recent feature work completed so far:
 - Validate that non-breathing steps are unaffected by the new animation classes
 - Verify `CurrentActivityCard` still displays image/video fallback correctly
 - Confirm `SessionControlsCard` progress bar still works for `time` steps
+- Verify that changing the language settings still updates both display and audio behavior correctly
+- Verify Kapal Bhati produces an audible beep cue on each substep transition when the exercise is running
+- If the beep is not heard in a browser, confirm that the app still shows the expected running state and that the cue is attempted from the correct timer transition point
+- Verify the control buttons keep strong contrast and distinct color states for Rewind, Reset, Start/Pause, and Next
 
 ## Visual Regression Checklist
 - `kapal-bhati` uses a yellow/orange badge and pulsating inhale/exhale animation

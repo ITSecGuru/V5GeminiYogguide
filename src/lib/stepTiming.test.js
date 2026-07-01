@@ -1,0 +1,26 @@
+import { describe, expect, it } from 'vitest';
+import { stepDatabase } from '../data/stepNames.js';
+import { getSequenceProgress, getStepCycleDuration, getStepDuration } from './stepTiming.js';
+
+describe('stepTiming', () => {
+  it('computes substep-asana duration from the substep pattern and cycle count', () => {
+    const step = stepDatabase['surya-namaskar'];
+
+    expect(getStepDuration(step)).toBe(300);
+    expect(getStepCycleDuration(step)).toBe(60);
+  });
+
+  it('uses the shared substep pattern for mishra-dand with 3 substeps and 5 repeats', () => {
+    const step = stepDatabase['mishra-dand'];
+
+    expect(getStepDuration(step)).toBe(60);
+    expect(getStepCycleDuration(step)).toBe(12);
+  });
+
+  it('reports the active substep position for sequence steps', () => {
+    const step = stepDatabase['surya-namaskar'];
+
+    expect(getSequenceProgress(step, 300, 300)).toEqual({ currentSubstep: 1, totalSubsteps: 12, substepLabel: '1/12' });
+    expect(getSequenceProgress(step, 295, 300)).toEqual({ currentSubstep: 2, totalSubsteps: 12, substepLabel: '2/12' });
+  });
+});

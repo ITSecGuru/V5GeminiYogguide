@@ -53,41 +53,57 @@ export default function SessionControlsCard({
 
   const isRepsType = currentStep?.type === 'reps' && !isPreparing;
   const isSequenceType = currentStep?.type === 'sequence' && !isPreparing;
+  const buttonBaseClass = 'flex h-[42px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-30';
+
+  const getButtonClass = (variant) => {
+    switch (variant) {
+      case 'rewind':
+        return `${buttonBaseClass} border-slate-300 bg-slate-600 text-white hover:bg-slate-700`;
+      case 'reset':
+        return `${buttonBaseClass} border-amber-300 bg-amber-500 text-white hover:bg-amber-600`;
+      case 'pause':
+      case 'start':
+        return `${buttonBaseClass} border-blue-300 bg-blue-600 text-white hover:bg-blue-700`;
+      case 'next':
+        return `${buttonBaseClass} border-emerald-300 bg-emerald-600 text-white hover:bg-emerald-700`;
+      default:
+        return `${buttonBaseClass} border-slate-300 bg-slate-600 text-white hover:bg-slate-700`;
+    }
+  };
 
   return (
-    <div className="w-full bg-white p-3 md:p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3">
+    <div className="w-full flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-[0_8px_30px_rgba(15,23,42,0.06)] md:p-4">
       
       {/* PROGRESS TRACKER SECTION */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 rounded-2xl border border-slate-200/70 bg-slate-50/80 p-3">
         <div>
-          <div className="flex justify-between items-center mb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+          <div className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
             {/* Dynamic Label Header Switching Logic */}
             <span>{isPreparing ? 'Preparation Clock' : isRepsType ? 'Repetition Matrix Counter' : 'Active Posture Clock'}</span>
             
             {isPreparing ? (
-              <span style={{ color: getTimerColor() }} className="font-mono text-xs font-bold transition-colors duration-300">
+              <span style={{ color: getTimerColor() }} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-colors duration-300">
                 {formatTime(timeLeft)} remaining
               </span>
             ) : isSequenceType ? (
-              <span style={{ color: getTimerColor() }} className="font-mono text-xs font-black bg-sky-50 px-2 py-0.5 rounded border border-sky-200 transition-colors duration-300 uppercase tracking-wider">
-                Round {repTelemetry.currentRep} of {repTelemetry.totalReps}
+              <span style={{ color: getTimerColor() }} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-colors duration-300">
+                {repTelemetry.substepLabel || `Round ${repTelemetry.currentRep} of ${repTelemetry.totalReps}`}
               </span>
             ) : isRepsType ? (
-              /* RESTORED REPETITION DISPLAY: Hides time values and outputs counts */
-              <span style={{ color: getTimerColor() }} className="font-mono text-xs font-black bg-purple-50 px-2 py-0.5 rounded border border-purple-200 transition-colors duration-300 uppercase tracking-wider">
+              <span style={{ color: getTimerColor() }} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-colors duration-300">
                 Rep {repTelemetry.currentRep} of {repTelemetry.totalReps} ({repTelemetry.repsLeft} Left)
               </span>
             ) : (
-              <span style={{ color: getTimerColor() }} className="font-mono text-xs font-bold transition-colors duration-300">
+              <span style={{ color: getTimerColor() }} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm transition-colors duration-300">
                 {formatTime(timeLeft)}
               </span>
             )}
           </div>
           
           {/* Background Bar utilizes steady calculated seconds underneath for clean visual math */}
-          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+          <div className="ui-progress-track">
             <div 
-              className="h-full rounded-full transition-all duration-1000 ease-out"
+              className="ui-progress-fill"
               style={{ 
                 width: `${Math.min(Math.max(progressPercent, 0), 100)}%`,
                 backgroundColor: getTimerColor()
@@ -97,59 +113,59 @@ export default function SessionControlsCard({
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+          <div className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
             <span>Overall Routine Matrix</span>
-            <span className="text-blue-600 font-mono text-xs font-bold">
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-600 shadow-sm">
               {Math.round(overallProgressPercent)}% ({currentStepIndex + 1}/{totalSteps})
             </span>
           </div>
-          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
-            <div className="h-full bg-blue-600 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgressPercent}%` }} />
+          <div className="ui-progress-track h-1.5">
+            <div className="ui-progress-fill bg-blue-600" style={{ width: `${overallProgressPercent}%` }} />
           </div>
         </div>
       </div>
 
       {/* MATRIX CONTROLS */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-2 rounded-xl border border-slate-100">
+      <div className="grid grid-cols-2 gap-2 rounded-2xl border border-slate-200/70 bg-slate-50/80 p-2 sm:grid-cols-4">
         <button
           type="button" onClick={prevStep} disabled={currentStepIndex === 0}
-          className="flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed h-[40px]"
+          className={getButtonClass('rewind')}
         >
-          <Rewind className="w-3.5 h-3.5 fill-current" />
+          <Rewind className="h-3.5 w-3.5 fill-current" />
           <span>Rewind</span>
         </button>
 
         <button
           type="button" onClick={resetTimer}
-          className="flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm h-[40px]"
+          className={getButtonClass('reset')}
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <RotateCcw className="h-3.5 w-3.5" />
           <span>Reset</span>
         </button>
 
         {timerStatus === 'running' ? (
           <button
             type="button" onClick={pauseTimer}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md h-[40px]"
+            className={getButtonClass('pause')}
           >
-            <Pause className="w-3.5 h-3.5 fill-current" />
+            <Pause className="h-3.5 w-3.5 fill-current" />
             <span>Pause</span>
           </button>
         ) : (
           <button
             type="button" onClick={startTimer}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md h-[40px]"
+            className={getButtonClass('start')}
           >
-            <Play className="w-3.5 h-3.5 fill-current" />
+            <Play className="h-3.5 w-3.5 fill-current" />
             <span>Start</span>
           </button>
         )}
 
         <button
           type="button" onClick={completeAndNext}
-          className="flex items-center justify-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md h-[40px]"
+          className={getButtonClass('next')}
         >
-          <CheckCircle className="w-3.5 h-3.5" />
+          <CheckCircle className="h-3.5 w-3.5" />
           <span>Next</span>
         </button>
       </div>
