@@ -35,10 +35,12 @@ A modern, responsive React web application for guided yoga routines, breathwork,
 - Updated `src/lib/audio.js` to use metadata-driven prompt text selection and better support English/Devanagari switch.
 - Added accurate breath animation timing classes and ring animations to `src/styles.css`.
 - Added `src/data/substepAsanas.js` and enhanced `src/data/stepNames.js` with structured pranayama metadata and cycle duration support.
+- Fixed rep-telemetry progression so `Rep X of Y (Z Left)` now uses the correct cycle duration for rep-based steps and is covered by regression tests.
 
 ## Automation & Validation
 - Confirmed build succeeds with `npm run build`.
 - Confirmed unit tests pass with `npm test`.
+- Confirmed rep-telemetry and step-timing regression tests pass with `npm test -- --run src/hooks/useRoutineRunner.test.jsx src/lib/stepTiming.test.js`.
 - Confirmed step database validation runs with `npm run validate:data`.
 - Note: `npm run lint` is declared in `package.json`, but ESLint requires a configuration file in the repo to execute successfully.
 

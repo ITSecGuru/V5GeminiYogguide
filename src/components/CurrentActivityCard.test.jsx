@@ -68,4 +68,39 @@ describe('CurrentActivityCard', () => {
     expect(screen.getByText('Cycle')).toBeInTheDocument();
     expect(screen.getByText('Substep')).toBeInTheDocument();
   });
+
+  it('shows the kriya step number relative to the kriya sequence', () => {
+    const step = {
+      ...baseStep,
+      stepKey: 'agnisar-kriya',
+      category: 'Kriya',
+      names: {
+        devanagari: 'अग्निसार क्रिया',
+        roman: 'Agnisar Kriya',
+        english: 'Abdominal Fire Practice'
+      },
+      type: 'time',
+      duration: 30,
+      breathPattern: ''
+    };
+
+    const steps = [
+      { ...step, category: 'Kriya', stepKey: 'first-kriya' },
+      { ...step, category: 'Asana', stepKey: 'asana-1' },
+      { ...step, category: 'Kriya', stepKey: 'second-kriya' },
+      { ...step, category: 'Kriya', stepKey: 'third-kriya' }
+    ];
+
+    render(
+      <CurrentActivityCard
+        currentStep={steps[0]}
+        isPreparing={false}
+        uiLanguage="English"
+        currentStepIndex={0}
+        steps={steps}
+      />
+    );
+
+    expect(screen.getByText('Kriya 1')).toBeInTheDocument();
+  });
 });

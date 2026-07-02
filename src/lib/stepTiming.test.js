@@ -17,6 +17,13 @@ describe('stepTiming', () => {
     expect(getStepCycleDuration(step)).toBe(12);
   });
 
+  it('uses the per-repetition duration as the cycle for repetition-based steps', () => {
+    const step = stepDatabase['hasta-sanchalan-kriya'];
+
+    expect(getStepDuration(step)).toBe(80);
+    expect(getStepCycleDuration(step)).toBe(5);
+  });
+
   it('reports the active substep position for sequence steps', () => {
     const step = stepDatabase['surya-namaskar'];
 

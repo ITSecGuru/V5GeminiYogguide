@@ -17,7 +17,7 @@ import { getSubstepTimeline } from '../lib/stepTiming.js';
 import BreathSubstepTimer from './BreathSubstepTimer.jsx';
 import PranayamaProgressRings from './PranayamaProgressRings.jsx';
 
-const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, currentStepDuration }) => { 
+const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, currentStepDuration, currentStepIndex = 0, steps = [] }) => { 
   if (!currentStep) return null;
 
   const baseUrl = import.meta.env.BASE_URL || '/';
@@ -29,6 +29,14 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
   const hasVideo = currentStep.videoUrl && currentStep.videoUrl.trim() !== "";
   const isRepsType = currentStep.type === 'reps';
   const isHindi = uiLanguage === "Devanagari";
+  const isKriyaStep = currentStep.category === 'Kriya' || /kriya/i.test(currentStep.stepKey || currentStep.id || '');
+  const kriyaSequenceNumber = isKriyaStep
+    ? steps.slice(0, currentStepIndex + 1).filter((step) => {
+        const stepCategory = step?.category;
+        const stepKey = step?.stepKey || step?.id || '';
+        return stepCategory === 'Kriya' || /kriya/i.test(stepKey);
+      }).length
+    : null;
 
   const breathAnimation = getBreathAnimation(currentStep, uiLanguage);
   const substepTimeline = getSubstepTimeline(currentStep);
@@ -118,6 +126,11 @@ const CurrentActivityCard = ({ currentStep, isPreparing, uiLanguage, timeLeft, c
                <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-lg border border-emerald-100">
                  {currentStep.category}
                </span>
+            )}
+            {isKriyaStep && typeof kriyaSequenceNumber === 'number' && (
+              <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[11px] font-bold rounded-lg border border-indigo-100">
+                {isHindi ? `क्रिया ${kriyaSequenceNumber}` : `Kriya ${kriyaSequenceNumber}`}
+              </span>
             )}
           </div>
 

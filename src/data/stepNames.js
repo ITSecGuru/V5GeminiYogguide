@@ -56,35 +56,15 @@ export const pranayamNames = {
   }
 };
 
-export const stepDatabase = {
-  // --- WARM UPS & JOGGING ---
-  
-  "prarthana": { 
-    // Reference Template for Future Additions:
-    names: { devanagari: "प्रार्थना", roman: "Prarthana", english: "Prayer" },
-    category: "Warm Up",
-    type: "time", 
-    duration: 20, 
-    reps: null, 
-    timePerRep: null, 
-    prepTime: 5,        // Gives practitioner 5 seconds to center themselves
-    hasSides: false,    // Symmetrical posture
-    breathPattern: "",  // e.g., "Breathe normally and center your mind"
-    benefits: "",       // e.g., "Prepares the mind and body for the session"
-    caution: "", 
-    audioUrl: "", 
-    videoUrl: "", 
-    pictureUrl: "" 
-  },
-  
-  "yogic-jogging-position-1": { 
+export const testSteps = {
+  "yogic-jogging-position-1": {
     names: { devanagari: "योगिक जॉगिंग स्थिति 1", roman: "Yogic Jogging Sthiti 1", english: "Yogic Jogging Position 1" },
     category: "Warm Up",
     type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     testMode: true,
-    caution: "Do not hyperextend the knees.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Do not hyperextend the knees.", audioUrl: "", videoUrl: "", pictureUrl: ""
   },
-  "yogic-jogging-position-2": { 
+  "yogic-jogging-position-2": {
     names: { devanagari: "योगिक जॉगिंग स्थिति 2", roman: "Yogic Jogging Sthiti 2", english: "Yogic Jogging Position 2" },
     category: "Warm Up",
     type: "time", duration: 15, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
@@ -97,9 +77,9 @@ export const stepDatabase = {
     ],
     benefits: "Warms the lungs and energizes the body while coordinating breath with movement.",
     testMode: true,
-    caution: "Keep the breath deep and steady but controlled, and stop if you feel dizzy.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Keep the breath deep and steady but controlled, and stop if you feel dizzy.", audioUrl: "", videoUrl: "", pictureUrl: ""
   },
-  "yogic-jogging-position-3": { 
+  "yogic-jogging-position-3": {
     names: { devanagari: "योगिक जॉगिंग स्थिति 3", roman: "Yogic Jogging Sthiti 3", english: "Yogic Jogging Position 3" },
     category: "Warm Up",
     type: "time", duration: 10, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
@@ -112,9 +92,9 @@ export const stepDatabase = {
     ],
     benefits: "Promotes calm, reduces stress, and tests the humming breath animation flow.",
     testMode: true,
-    caution: "Keep the jaw and throat soft while humming." , audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Keep the jaw and throat soft while humming.", audioUrl: "", videoUrl: "", pictureUrl: ""
   },
-  "yogic-jogging-position-4": { 
+  "yogic-jogging-position-4": {
     names: { devanagari: "योगिक जॉगिंग स्थिति 4", roman: "Yogic Jogging Sthiti 4", english: "Yogic Jogging Position 4" },
     category: "Warm Up",
     type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false,
@@ -129,9 +109,9 @@ export const stepDatabase = {
     ],
     benefits: "Tests alternate nostril animation timing while maintaining a dynamic warm-up cadence.",
     testMode: true,
-    caution: "Coordinate breath with each repetition, and keep the movement steady.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "Coordinate breath with each repetition, and keep the movement steady.", audioUrl: "", videoUrl: "", pictureUrl: ""
   },
-  "yogic-jogging-position-5": { 
+  "yogic-jogging-position-5": {
     names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom-test", english: "Anulom Vilom-test" },
     category: "Warm Up",
     type: "reps", duration: null, reps: 40, timePerRep: 24, prepTime: 5, hasSides: false,
@@ -147,14 +127,36 @@ export const stepDatabase = {
     ],
     testMode: true,
     benefits: "Test the new pranayama rendering flow.",
-    caution: "This metadata is for UI testing only.", audioUrl: "", videoUrl: "", pictureUrl: "" 
+    caution: "This metadata is for UI testing only.", audioUrl: "", videoUrl: "", pictureUrl: ""
+  }
+};
+
+export const stepDatabase = {
+  // --- WARM UPS & JOGGING ---
+  
+  "prarthana": {
+    // Reference Template for Future Additions:
+    names: { devanagari: "प्रार्थना", roman: "Prarthana", english: "Prayer" },
+    category: "Warm Up",
+    type: "time",
+    duration: 20,
+    reps: null,
+    timePerRep: null,
+    prepTime: 5,        // Gives practitioner 5 seconds to center themselves
+    hasSides: false,    // Symmetrical posture
+    breathPattern: "",  // e.g., "Breathe normally and center your mind"
+    benefits: "",       // e.g., "Prepares the mind and body for the session"
+    caution: "",
+    audioUrl: "",
+    videoUrl: "",
+    pictureUrl: ""
   },
 
   // --- KRIYAS ---
   "hasta-sanchalan-kriya": { 
     names: { devanagari: "हस्त संचालन क्रिया", roman: "Hasta Sanchalan Kriya", english: "Hand Movement Practice" },
     category: "Kriya",
-    type: "reps", duration: null, reps: 16, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
+    type: "reps", duration: 80, reps: 16, timePerRep: 5, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     caution: "Avoid jerky shoulder movements.", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
   "purna-hasta-sanchalan-kriya": { 
@@ -303,7 +305,7 @@ export const stepDatabase = {
   "anulom-vilom": { 
     names: { devanagari: "अनुलोम विलोम", roman: "Anulom Vilom", english: "Alternate Nostril Breathing" },
     category: "Pranayama",
-    type: "time", duration: 300, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
+    type: "time", duration: 880, reps: null, timePerRep: null, prepTime: 5, hasSides: false,
     breathPattern: "Cycle: Purak (inhale), Rechak (exhale), Purak (inhale), Rechak (exhale).",
     breathAnimationKey: "anulom-vilom",
     breathCycleDuration: 24,

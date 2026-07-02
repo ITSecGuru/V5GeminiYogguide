@@ -95,6 +95,11 @@ const getStepCycleDuration = (step = {}) => {
     return substeps.length * substepDuration;
   }
 
+  if (step.type === 'reps') {
+    const timePerRep = typeof step.timePerRep === 'number' ? step.timePerRep : DEFAULT_TIME_PER_REP;
+    return timePerRep > 0 ? timePerRep : 0;
+  }
+
   if (step.type === 'sequence') {
     const reps = typeof step.reps === 'number' ? step.reps : 1;
     const timePerRep = typeof step.timePerRep === 'number' ? step.timePerRep : 15;

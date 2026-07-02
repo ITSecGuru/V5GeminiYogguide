@@ -68,7 +68,18 @@ This test plan covers the recent feature work completed so far:
 - `reps` step shows `Rep X of Y (Z Left)` while running
 - Both use the correct computed duration for progress math
 
-### 6. App State and Navigation
+### 6. Rep Telemetry Regression
+
+#### Steps
+- Run the rep telemetry regression tests or manually start a rep-based step with `reps: 16` and `timePerRep: 5`
+- Observe the displayed counter at the start, mid-way, and near completion of the step
+
+#### Expected
+- The displayed counter starts at `Rep 1 of 16 (15 Left)`
+- The counter advances as the timer progresses through each rep cycle
+- The final state reaches `Rep 16 of 16 (0 Left)` without exceeding the total count
+
+### 7. App State and Navigation
 
 #### Steps
 - Switch routines while the timer is idle

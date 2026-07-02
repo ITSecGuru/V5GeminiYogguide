@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
+import { substepAsanaPatterns } from "../src/data/substepAsanas.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -87,6 +88,71 @@ function extractRoutineConfigsFromText(routinesText) {
   return routines;
 }
 
+function getSubstepPattern(step) {
+  if (Array.isArray(step?.substepAsanaPattern) && step.substepAsanaPattern.length > 0) {
+    return step.substepAsanaPattern;
+  }
+
+  if (typeof step?.substepAsanaPatternKey === "string" && step.substepAsanaPatternKey) {
+    const pattern = substepAsanaPatterns[step.substepAsanaPatternKey];
+    return pattern?.substeps || [];
+  }
+
+  return [];
+}
+
+function getExpectedDurationForStep(step) {
+  if (!step || typeof step !== "object") return null;
+
+  if (step.type === "time") {
+    return typeof step.duration === "number" && step.duration > 0 ? step.duration : null;
+  }
+
+  if (step.type === "reps") {
+    const reps = typeof step.reps === "number" && step.reps > 0 ? step.reps : null;
+    const timePerRep = typeof step.timePerRep === "number" && step.timePerRep > 0 ? step.timePerRep : 5;
+
+    if (Array.isArray(step.pranayamSteps) && step.pranayamSteps.length > 0) {
+      const substepTotal = step.pranayamSteps.reduce((sum, substep) => {
+        const duration = typeof substep.duration === "number" && substep.duration > 0 ? substep.duration : 0;
+        return sum + duration;
+      }, 0);
+
+      return reps !== null ? reps * substepTotal : null;
+    }
+
+    const substeps = getSubstepPattern(step);
+    if (substeps.length > 0) {
+      const substepDuration = typeof step.substepDuration === "number" && step.substepDuration > 0
+        ? step.substepDuration
+        : 5;
+      return reps !== null ? reps * substeps.length * substepDuration : null;
+    }
+
+    return reps !== null ? reps * timePerRep : null;
+  }
+
+  if (step.type === "sequence") {
+    const substeps = Array.isArray(step.internalSteps)
+      ? step.internalSteps
+      : Array.isArray(step.sequence)
+        ? step.sequence
+        : getSubstepPattern(step);
+
+    if (substeps.length > 0) {
+      const substepDuration = typeof step.substepDuration === "number" && step.substepDuration > 0
+        ? step.substepDuration
+        : 5;
+      const repetitions = typeof step.repeats === "number" && step.repeats > 0
+        ? step.repeats
+        : (typeof step.reps === "number" && step.reps > 0 ? step.reps : 1);
+      return substeps.length * substepDuration * repetitions;
+    }
+  }
+
+  return null;
+}
+
 function validateStep(stepId, step) {
   if (!step || typeof step !== "object") {
     addError(`Step "${stepId}" is not a valid object.`);
@@ -141,6 +207,16 @@ function validateStep(stepId, step) {
     ) {
       addWarning(`Reps step "${stepId}" has invalid timePerRep.`);
     }
+
+    const expectedDuration = getExpectedDurationForStep(step);
+    if (expectedDuration !== null && typeof step.duration === "number" && step.duration > 0) {
+      const tolerance = 1;
+      if (Math.abs(expectedDuration - step.duration) > tolerance) {
+        addError(
+          `Reps step "${stepId}" has duration ${step.duration} but expected ${expectedDuration} from reps/timePerRep or substep totals.`
+        );
+      }
+    }
   }
 
   if (step.type === "sequence") {
@@ -148,6 +224,16 @@ function validateStep(stepId, step) {
       addWarning(
         `Sequence step "${stepId}" should define internalSteps or sequence array.`
       );
+    }
+
+    const expectedDuration = getExpectedDurationForStep(step);
+    if (expectedDuration !== null && typeof step.duration === "number" && step.duration > 0) {
+      const tolerance = 1;
+      if (Math.abs(expectedDuration - step.duration) > tolerance) {
+        addError(
+          `Sequence step "${stepId}" has duration ${step.duration} but expected ${expectedDuration} from substep counts and repetitions.`
+        );
+      }
     }
   }
 
@@ -315,4 +401,8 @@ async function main() {
   console.log("Data validation passed.");
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  main();
+}
+
+export { getExpectedDurationForStep };

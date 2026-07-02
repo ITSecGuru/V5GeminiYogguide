@@ -12,9 +12,7 @@ const masterRoutinesConfig = [
     description: "Patanjali Yogic Jogging sequence with Positions 1 to 5, followed by 12 individual Yogic Jogging steps and 5 Surya Namaskar rounds.",
     safetyNote: "Start gently, keep movement rhythmic and controlled, and reduce speed if breathing becomes strained or balance feels unstable.",
     stepKeys: [
-      "yogic-jogging-position-1", "yogic-jogging-position-2", "yogic-jogging-position-3",
-      "yogic-jogging-position-4", "yogic-jogging-position-5", "hasta-sanchalan-kriya",
-      "purna-hasta-sanchalan-kriya", "janu-sanchalan-kriya", "janu-vikasak-kriya",
+      "prarthana", "hasta-sanchalan-kriya", "purna-hasta-sanchalan-kriya", "janu-sanchalan-kriya", "janu-vikasak-kriya",
       "uru-vikasak-kriya-1", "uru-vikasak-kriya-2", "vaksha-vikasak-kriya",
       "trikonasana-kriya", "konasana-kriya", "hastottanasana-paadhastasana-kriya",
       "chalit-pad-hastasana-kriya", "yog-nrutyasana-kriya", "surya-namaskar",

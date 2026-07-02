@@ -167,6 +167,8 @@ const App = () => {
                   uiLanguage={uiLanguage} // Forwards state parameter to toggle main text nodes dynamically
                   timeLeft={timeLeft}
                   currentStepDuration={currentStepDuration}
+                  currentStepIndex={currentStepIndex}
+                  steps={steps}
                 />
 
                 <SessionControlsCard 
