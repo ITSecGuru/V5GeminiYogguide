@@ -98,8 +98,31 @@ export const getBreathPatternText = (step = {}, uiLanguage = 'English') => {
   return patternFallback;
 };
 
-export const getAudioPromptText = (step = {}, language = 'en', omitStepName = false) => {
+const getRepGuidanceText = (step = {}, language = 'en', repGuidance = {}) => {
+  const { currentRep, totalReps } = repGuidance || {};
+  const shouldGuide = step.type === 'reps' || step.type === 'sequence';
+
+  if (!shouldGuide || typeof currentRep !== 'number' || typeof totalReps !== 'number') {
+    return '';
+  }
+
+  if (currentRep < 1 || totalReps < 1) {
+    return '';
+  }
+
+  return language === 'hi'
+    ? `चरण ${currentRep}/${totalReps}`
+    : `Step ${currentRep} of ${totalReps}`;
+};
+
+export const getAudioPromptText = (step = {}, language = 'en', omitStepName = false, repGuidance = {}) => {
+  const repGuidanceText = getRepGuidanceText(step, language, repGuidance);
+
   if (omitStepName) {
+    if (repGuidanceText) {
+      return repGuidanceText;
+    }
+
     if (language === 'hi') {
       return step.type === 'reps' ? 'दोहराएं' : 'समय शुरू';
     }
@@ -107,9 +130,9 @@ export const getAudioPromptText = (step = {}, language = 'en', omitStepName = fa
   }
 
   const names = step.names || {};
-  if (language === 'hi') {
-    return step.speech?.hi || names.devanagari || names.english || 'शुरू करें';
-  }
+  const basePrompt = language === 'hi'
+    ? step.speech?.hi || names.devanagari || names.english || 'शुरू करें'
+    : step.speech?.en || names.english || names.devanagari || 'Begin.';
 
-  return step.speech?.en || names.english || names.devanagari || 'Begin.';
+  return repGuidanceText ? `${basePrompt}. ${repGuidanceText}` : basePrompt;
 };

@@ -89,6 +89,21 @@ const masterRoutinesConfig = [
     ]
   },
   {
+    id: "legKneePhysio20",
+    label: "Leg and Knee Physio Routine",
+    description: "A 21-step physiotherapy routine for leg and knee rehabilitation with initial guided steps and placeholders for progression.",
+    safetyNote: "Move slowly and pain-free. Stop if pain increases, swelling worsens, or you feel unstable.",
+    stepKeys: [
+      "skateboard-knee-bending", "skateboard-knee-bending", "knee-extension-physio",
+      "leg-knee-placeholder-4", "leg-knee-placeholder-5", "leg-knee-placeholder-6",
+      "leg-knee-placeholder-7", "leg-knee-placeholder-8", "leg-knee-placeholder-9",
+      "leg-knee-placeholder-10", "leg-knee-placeholder-11", "leg-knee-placeholder-12",
+      "leg-knee-placeholder-13", "leg-knee-placeholder-14", "leg-knee-placeholder-15",
+      "leg-knee-placeholder-16", "leg-knee-placeholder-17", "leg-knee-placeholder-18",
+      "leg-knee-placeholder-19", "leg-knee-placeholder-20", "leg-knee-placeholder-21"
+    ]
+  },
+  {
     id: "neckPainSupport",
     label: "Neck Pain / Spondylosis Support",
     description: "Gentle stretches and isometrics to relieve cervical tension and improve neck mobility.",

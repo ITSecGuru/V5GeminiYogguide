@@ -52,8 +52,12 @@ const App = () => {
     }
 
     const langCode = audioLanguage === 'Devanagari' ? 'hi' : 'en';
-    playAudioPrompt(currentStep, langCode, false);
-  }, [currentStepIndex, audioLanguage, isMuted, currentStep]);
+    const isRepeatProgressPrompt = ['reps', 'sequence'].includes(currentStep.type) && repTelemetry.currentRep > 1;
+    playAudioPrompt(currentStep, langCode, isRepeatProgressPrompt, {
+      currentRep: repTelemetry.currentRep,
+      totalReps: repTelemetry.totalReps
+    });
+  }, [currentStepIndex, audioLanguage, isMuted, currentStep, repTelemetry.currentRep, repTelemetry.totalReps]);
 
   // Show a small TTS status indicator when the debug build is active
   useEffect(() => {

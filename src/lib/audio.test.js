@@ -53,4 +53,32 @@ describe('audio helpers', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('रेचक प्रारंभ करें।');
   });
+
+  it('appends repeat guidance for rep-based steps', () => {
+    const step = {
+      id: 'step-3',
+      stepKey: 'skateboard-knee-bending',
+      type: 'reps',
+      names: { english: 'Skateboard Knee Bending', devanagari: 'स्केटबोर्ड घुटना मोड़ना' },
+      speech: { en: 'Begin Skateboard Knee Bending', hi: 'स्केटबोर्ड घुटना मोड़ना प्रारंभ करें।' }
+    };
+
+    playAudioPrompt(step, 'en', false, { currentRep: 2, totalReps: 4 });
+
+    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('Begin Skateboard Knee Bending. Step 2 of 4');
+  });
+
+  it('speaks only repeat progress when step name is omitted', () => {
+    const step = {
+      id: 'step-4',
+      stepKey: 'skateboard-knee-bending',
+      type: 'reps',
+      names: { english: 'Skateboard Knee Bending', devanagari: 'स्केटबोर्ड घुटना मोड़ना' },
+      speech: { en: 'Begin Skateboard Knee Bending', hi: 'स्केटबोर्ड घुटना मोड़ना प्रारंभ करें।' }
+    };
+
+    playAudioPrompt(step, 'en', true, { currentRep: 3, totalReps: 10 });
+
+    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('Step 3 of 10');
+  });
 });

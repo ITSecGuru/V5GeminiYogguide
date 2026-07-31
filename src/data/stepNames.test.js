@@ -6,6 +6,44 @@ describe('step data organization', () => {
     expect(stepDatabase['anulom-vilom'].duration).toBe(880);
   });
 
+  it('defines the requested walking steps with the expected timing and side support', () => {
+    expect(stepDatabase['leg-knee-placeholder-19']).toMatchObject({
+      names: expect.objectContaining({
+        english: 'Forward and Reverse Walk'
+      }),
+      type: 'reps',
+      reps: 4,
+      timePerRep: 30,
+      prepTime: 5,
+      hasSides: false,
+      description: 'Repeat 4 times with 30 seconds per rep.'
+    });
+
+    expect(stepDatabase['leg-knee-placeholder-20']).toMatchObject({
+      names: expect.objectContaining({
+        english: 'Sideways Walking'
+      }),
+      type: 'reps',
+      reps: 4,
+      timePerRep: 30,
+      prepTime: 5,
+      hasSides: true,
+      description: 'Repeat 4 times on each side with 30 seconds per rep.'
+    });
+
+    expect(stepDatabase['leg-knee-placeholder-21']).toMatchObject({
+      names: expect.objectContaining({
+        english: 'Walking 100 Meters'
+      }),
+      type: 'reps',
+      reps: 1,
+      timePerRep: 100,
+      prepTime: 5,
+      hasSides: false,
+      description: 'Repeat 1 time with 100 seconds per rep.'
+    });
+  });
+
   it('keeps testing-only steps in a dedicated testSteps export', () => {
     const testStepKeys = [
       'yogic-jogging-position-1',

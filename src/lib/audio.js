@@ -137,9 +137,9 @@ export const speakText = (text, language = 'en', meta = {}) => {
   speakNative(text, lang, options.rate, options.pitch, options.volume, { stepId: meta?.stepId });
 };
 
-export const playAudioPrompt = (step, language = 'en', omitStepName = false) => {
+export const playAudioPrompt = (step, language = 'en', omitStepName = false, repGuidance = {}) => {
   window.speechSynthesis?.cancel();
-  const promptText = getAudioPromptText(step, language, omitStepName);
+  const promptText = getAudioPromptText(step, language, omitStepName, repGuidance);
 
   // Log prompt selection; include stepId only when prompt text is not Devanagari
   if (isTtsDebugEnabled()) {
