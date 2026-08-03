@@ -14,6 +14,8 @@ import RoutinePlaylistCard from './components/RoutinePlaylistCard';
 import useRoutineRunner from './hooks/useRoutineRunner';
 import { playAudioPrompt } from './lib/audio';
 
+const LEG_KNEE_ROUTINE_ID = 'legKneePhysio20';
+
 const App = () => {
   // Shared state parameters for system localization vectors
   const [uiLanguage, setUiLanguage] = useState("Devanagari");
@@ -42,6 +44,21 @@ const App = () => {
     completeAndNext, 
     prevStep 
   } = useRoutineRunner();
+
+  // Apply routine-wise language defaults:
+  // - Leg/Knee Physio: English display + English audio
+  // - All other routines: Devanagari display + Hindi audio
+  useEffect(() => {
+    const defaultLanguage = selectedRoutineId === LEG_KNEE_ROUTINE_ID ? 'English' : 'Devanagari';
+
+    if (uiLanguage !== defaultLanguage) {
+      setUiLanguage(defaultLanguage);
+    }
+
+    if (audioLanguage !== defaultLanguage) {
+      setAudioLanguage(defaultLanguage);
+    }
+  }, [selectedRoutineId, uiLanguage, audioLanguage]);
 
   // Play audio prompt when a new step becomes active (respecting mute and voice selection)
   useEffect(() => {
