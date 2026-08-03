@@ -1,4 +1,20 @@
-# Lata Yog Functional Technical Specification v8.1
+# Lata Yog Functional Technical Specification v8.2
+
+## Current implementation update (2026-07-31)
+
+This revision brings the specification in line with the current application implementation and the latest content model updates.
+
+### What changed in the current build
+- The app now supports repeat-aware audio prompts for `reps` and `sequence` steps, including progress cues such as “Step 2 of 10”.
+- Step metadata now supports richer instructional fields such as `description`, `benefits`, `caution`, `pictureUrl`, and `videoUrl` alongside the existing timing and breath guidance data.
+- A new physio-oriented routine, “Leg and Knee Physio Routine”, has been introduced with step definitions for knee-friendly movements such as skateboard knee bending and knee extension physio.
+- Pranayama and breathwork steps continue to use structured metadata via `breathAnimationKey`, `breathCycleDuration`, `recommendedCycles`, and `pranayamSteps` to drive the UI and animation logic.
+- The UI now uses metadata-driven breath labels and pattern fallbacks rather than relying only on hardcoded component logic.
+
+### Updated product scope
+- The experience now covers both yoga/pranayama guidance and physio-inspired movement routines.
+- The content model supports both instructional cards and safety-oriented guidance for low-impact repetition work.
+- Visual media support is now part of the step definition model, allowing routines to present images or videos based on step metadata.
 
 ## Breathing Animation: Anulom Vilom
 
@@ -69,4 +85,6 @@ This structured schema avoids hardcoded step logic in components and enables fle
 - The UI shows explicit breathing guidance text, not just the animation label.
 - The animation visually differentiates inhalation from exhalation within the cycle.
 - The specification clearly documents the 4-step cycle and the 16–18 minute session target.
+- Repetition-based steps can provide rep-aware prompts and progress guidance in the audio layer.
+- Physio-style steps can include safety guidance, benefits, and media references without breaking the core routine flow.
 

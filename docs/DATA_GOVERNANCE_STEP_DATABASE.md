@@ -25,8 +25,9 @@ src/data/stepNames.js
 A typical step entry includes:
 
 - `names`: localized labels such as `english`, `devanagari`, and `roman`
-- `category`: step grouping like `Warm Up`, `Kriya`, `Pranayama`, or `Asana`
+- `category`: step grouping like `Warm Up`, `Kriya`, `Pranayama`, `Asana`, or `Physio`
 - `type`: `time`, `reps`, or `sequence`
+- `description`: optional short instructional summary for the card UI
 - `duration`: total seconds for time-based steps
 - `reps`: number of repetitions for `reps` or `sequence` steps
 - `timePerRep`: per-repetition duration when needed
@@ -38,6 +39,16 @@ A typical step entry includes:
 - `caution`: additional safety guidance
 - `benefits`: practice benefits or outcome notes
 - `pictureUrl` / `videoUrl`: optional media references
+
+## Current implementation updates (2026-07-31)
+
+The current application build adds a few important governance expectations:
+
+- Routine sequencing is now split between yoga/pranayama content and a new physio-oriented flow, so step keys should be reviewed carefully when adding new routines.
+- Repetition-based steps should include clear `description`, `benefits`, and `caution` values where appropriate so the UI can present safe, helpful guidance.
+- Media references (`pictureUrl` / `videoUrl`) are now part of the content model and should be provided for step cards when suitable visual assets exist.
+- Breath-based steps should continue to carry `breathPattern`, `breathAnimationKey`, and `pranayamSteps` when the UI needs animated or timed guidance.
+- Audio prompts are now rep-aware for `reps` and `sequence` steps; keep the metadata consistent with the intended step pacing and repetition count.
 
 ## Example Step
 
@@ -69,6 +80,7 @@ A typical step entry includes:
 - Keep step metadata in `src/data/stepNames.js` and routine sequencing in `src/data/routines.js`.
 - If a step uses `hasSides`, confirm the app correctly expands both left and right versions in `src/data/routines.js`.
 - For new pranayama steps, provide `breathPattern`, `breathAnimationKey`, and consider adding `pranayamSteps` to support progress rings and substep timers.
+- For new physio or rehabilitation steps, provide `description`, `benefits`, `caution`, and media references where useful so the routine card remains informative and safe.
 - Use `breathCycleDuration` when the total cycle time should be explicit; otherwise allow the UI to derive it from `pranayamSteps`.
 - Avoid duplicating step behavior in components or hook code.
 - Avoid runtime imports from backup files such as `./backup/stepNames` or `backup/stepNamesv7`.

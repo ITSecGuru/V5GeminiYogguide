@@ -875,7 +875,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 5, prepTime: 5, hasSides: false,
     description: "Repeat 10 times with 5 seconds hold.",
     breathPattern: "Bend with control and hold at end range for 5 seconds each rep.", benefits: "Supports knee mobility and controlled strength.",
-    caution: "Keep movement pain-free and avoid sudden jerks.", audioUrl: "", videoUrl: "", pictureUrl: ""
+    caution: "Keep movement pain-free and avoid sudden jerks.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/skateboard-knee-bending.jpg"
   },
   "knee-extension-physio": {
     names: { devanagari: "घुटना विस्तार", roman: "Knee Extension", english: "Knee Extension" },
@@ -883,7 +883,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 15, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 15 times with 3 seconds hold.",
     breathPattern: "Extend the knee fully and hold for 3 seconds each rep.", benefits: "Improves quadriceps activation and terminal knee extension.",
-    caution: "Do not lock aggressively into pain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/knee-extension.jpg"
+    caution: "Do not lock aggressively into pain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/knee-extension-physio.jpg"
   },
   "leg-knee-placeholder-4": {
     names: { devanagari: "बैठा मार्चिंग", roman: "Seated Marching", english: "Seated Marching" },
@@ -891,7 +891,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 15, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Alternate movement 15 times with 3 seconds per rep.",
     breathPattern: "Move one leg at a time with control, alternating smoothly for each rep.", benefits: "Supports hip mobility and gentle coordination.",
-    caution: "Keep the movement pain-free and stable.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/seated-marching.jpg"
+    caution: "Keep the movement pain-free and stable.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/seated marching.png"
   },
   "leg-knee-placeholder-5": {
     names: { devanagari: "बैठना और खड़ा होना सेट 1", roman: "Sit and Stand Set 1", english: "Sit and Stand Set 1" },
@@ -899,15 +899,15 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 12, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 12 times with 3 seconds per rep.",
     breathPattern: "Stand up and sit down with steady control on each rep.", benefits: "Builds lower limb strength and functional sit-to-stand control.",
-    caution: "Use a stable chair and stop if you feel unsteady.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/sit-and-stand-set-1.jpg"
+    caution: "Use a stable chair and stop if you feel unsteady.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/sit stand.png"
   },
   "leg-knee-placeholder-6": {
-    names: { devanagari: "बैठना और खड़ा होना सेट 2", roman: "Sit to Stand Set 2", english: "Sit to Stand Set 2" },
+    names: { devanagari: "बैठना और खड़ा होना सेट 2", roman: "Sit Stand set 1", english: "Sit to Stand Set 2" },
     category: "Physio",
     type: "reps", duration: null, reps: 12, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 12 times with 3 seconds per rep.",
     breathPattern: "Rise and lower slowly, keeping the movement smooth and controlled.", benefits: "Improves repeated standing strength and knee control.",
-    caution: "Keep knees aligned and do not rush the movement.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/sit-to-stand-set-2.jpg"
+    caution: "Keep knees aligned and do not rush the movement.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/sit stand.png"
   },
   "leg-knee-placeholder-7": {
     names: { devanagari: "खड़े होकर हिप अबडक्शन", roman: "Standing Hip Abduction", english: "Standing Hip Abduction" },
@@ -915,7 +915,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: true,
     description: "Repeat 10 times on the left leg and 10 times on the right leg with 3 seconds per rep.",
     breathPattern: "Lift the leg out to the side with control, then return slowly before switching sides.", benefits: "Supports hip stability and controlled side leg strength.",
-    caution: "Keep the trunk steady and avoid leaning. Stop if you feel pain or lose balance.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing-hip-abduction.jpg"
+    caution: "Keep the trunk steady and avoid leaning. Stop if you feel pain or lose balance.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/Standing hip abduction.jpeg"
   },
   "leg-knee-placeholder-8": {
     names: { devanagari: "खड़े होकर मार्चिंग - हिप फ्लेक्शन", roman: "Standing Marching - Hip Flexion", english: "Standing Marching - Hip Flexion" },
@@ -923,7 +923,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 20, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 20 times with 3 seconds per rep.",
     breathPattern: "Lift each knee with control while alternating legs in a steady marching rhythm.", benefits: "Supports hip flexion strength and rhythmic lower-limb coordination.",
-    caution: "Keep the torso upright and avoid rushing the movement.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing-marching-hip-flexion.jpg"
+    caution: "Keep the torso upright and avoid rushing the movement.", audioUrl: "/assets/images/Hip Flexion.png", videoUrl: "", pictureUrl: "/assets/images/standing-marching-hip-flexion.png"
   },
   "leg-knee-placeholder-9": {
     names: { devanagari: "हिप एक्सटेंशन", roman: "Hip Extension", english: "Hip Extension" },
@@ -931,7 +931,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: true,
     description: "Repeat 10 times on each side with 3 seconds per rep.",
     breathPattern: "Move the leg backward with control and return slowly before switching sides.", benefits: "Helps strengthen the glutes and support hip control.",
-    caution: "Avoid arching the lower back or leaning forward. Stop if you feel pain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/hip-extension.jpg"
+    caution: "Avoid arching the lower back or leaning forward. Stop if you feel pain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/hip extension.png"
   },
   "leg-knee-placeholder-10": {
     names: { devanagari: "खड़े होकर हैमस्ट्रिंग कर्ल", roman: "Standing Hamstring Curls", english: "Standing Hamstring Curls" },
@@ -939,7 +939,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: true,
     description: "Repeat 10 times on each side with 3 seconds per rep.",
     breathPattern: "Bend the knee smoothly to curl the heel toward the seat, then lower with control.", benefits: "Supports hamstring activation and knee flexion control.",
-    caution: "Keep the thighs aligned and avoid swinging the leg.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing-hamstring-curls.jpg"
+    caution: "Keep the thighs aligned and avoid swinging the leg.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing hamstring curls.png"
   },
   "leg-knee-placeholder-11": {
     names: { devanagari: "एड़ी उठाना - पिंडली व्यायाम सेट 1", roman: "Leg Heel Raise - Calf Raises Set 1", english: "Leg Heel Raise - Calf Raises Set 1" },
@@ -947,7 +947,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 12, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 12 times with 3 seconds per rep.",
     breathPattern: "Rise onto the toes with control, then lower slowly on each rep.", benefits: "Improves calf strength and ankle stability.",
-    caution: "Keep the movement smooth and avoid bouncing.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg-heel-raise-calf-raises-set-1.jpg"
+    caution: "Keep the movement smooth and avoid bouncing.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg heel raise calf.jpeg"
   },
   "leg-knee-placeholder-12": {
     names: { devanagari: "एड़ी उठाना - पिंडली व्यायाम सेट 2", roman: "Leg Heel Raise - Calf Raises Set 2", english: "Leg Heel Raise - Calf Raises Set 2" },
@@ -955,7 +955,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 12, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 12 times with 3 seconds per rep.",
     breathPattern: "Rise onto the toes with control, then lower slowly on each rep.", benefits: "Builds calf endurance and supports balance during standing tasks.",
-    caution: "Keep the knees soft and the heels aligned as you lift and lower.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg-heel-raise-calf-raises-set-2.jpg"
+    caution: "Keep the knees soft and the heels aligned as you lift and lower.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg heel raise calf.jpeg"
   },
   "leg-knee-placeholder-13": {
     names: { devanagari: "घुटना विस्तार - क्वाड्स ओवर फुलक्रम", roman: "Knee Extension - Quads Over Fulcrum", english: "Knee Extension - Quads Over Fulcrum" },
@@ -963,7 +963,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 10 times with 3 seconds per rep.",
     breathPattern: "Straighten the knee over the fulcrum with control and return slowly on each rep.", benefits: "Supports quadriceps activation and knee extension control.",
-    caution: "Keep the movement smooth and pain-free. Do not force the knee.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/knee-extension-quads-over-fulcrum.jpg"
+    caution: "Keep the movement smooth and pain-free. Do not force the knee.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/knee extension quad-fulcrum.jpg"
   },
   "leg-knee-placeholder-14": {
     names: { devanagari: "खड़े होकर लंज स्ट्रेच सेट 1", roman: "Standing Lunge Stretch Set 1", english: "Standing Lunge Stretch Set 1" },
@@ -971,7 +971,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 5, timePerRep: 5, prepTime: 5, hasSides: true,
     description: "Repeat 5 times on each side with 5 seconds per rep.",
     breathPattern: "Hold the stretch steadily, then switch sides with control.", benefits: "Improves hip flexor mobility and lower-limb flexibility.",
-    caution: "Keep the back upright and avoid pushing into discomfort.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing-lunge-stretch-set-1.jpg"
+    caution: "Keep the back upright and avoid pushing into discomfort.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing lunge.jpg"
   },
   "leg-knee-placeholder-15": {
     names: { devanagari: "खड़े होकर लंज स्ट्रेच सेट 2", roman: "Standing Lunge Stretch Set 2", english: "Standing Lunge Stretch Set 2" },
@@ -979,7 +979,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 5, timePerRep: 5, prepTime: 5, hasSides: true,
     description: "Repeat 5 times on each side with 5 seconds per rep.",
     breathPattern: "Hold the stretch steadily, then switch sides with control.", benefits: "Improves hip flexor mobility and lower-limb flexibility.",
-    caution: "Keep the back upright and avoid pushing into discomfort.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing-lunge-stretch-set-2.jpg"
+    caution: "Keep the back upright and avoid pushing into discomfort.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/standing lunge.jpg"
   },
   "leg-knee-placeholder-16": {
     names: { devanagari: "स्क्वॉट", roman: "Squat", english: "Squat" },
@@ -995,7 +995,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: true,
     description: "Repeat 10 times on each side with 3 seconds per rep.",
     breathPattern: "Stretch the leg with the band under control, then return slowly.", benefits: "Supports hamstring and leg flexibility with gentle resistance.",
-    caution: "Keep the movement smooth and stop if you feel strain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg-stretch-with-rubber-band.jpg"
+    caution: "Keep the movement smooth and stop if you feel strain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/leg stretch with band.png"
   },
   "leg-knee-placeholder-18": {
     names: { devanagari: "स्टूल पर पैर रखकर दबाव", roman: "Leg on Stool Press Down", english: "Leg on Stool Press Down" },
@@ -1011,7 +1011,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 4, timePerRep: 30, prepTime: 5, hasSides: false,
     description: "Repeat 4 times with 30 seconds per rep.",
     breathPattern: "Walk forward and reverse with steady pace and controlled knee tracking.", benefits: "Supports gait control, endurance, and knee confidence.",
-    caution: "Use a safe, flat path and avoid pain-provoking speed.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/forward-and-reverse-walk.jpg"
+    caution: "Use a safe, flat path and avoid pain-provoking speed.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/Parallel bar walking.png"
   },
   "leg-knee-placeholder-20": {
     names: { devanagari: "बग़ल में चलना", roman: "Sideways Walking", english: "Sideways Walking" },
@@ -1019,7 +1019,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 4, timePerRep: 30, prepTime: 5, hasSides: true,
     description: "Repeat 4 times on each side with 30 seconds per rep.",
     breathPattern: "Step laterally with soft knees and stable hips before switching sides.", benefits: "Builds lateral stability and supports knee alignment.",
-    caution: "Keep steps controlled and avoid twisting the knee.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/sideways-walking.jpg"
+    caution: "Keep steps controlled and avoid twisting the knee.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/Parallel bar walking.png"
   },
   "leg-knee-placeholder-21": {
     names: { devanagari: "100 मीटर चलना", roman: "Walking 100 Meters", english: "Walking 100 Meters" },
@@ -1027,6 +1027,6 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 1, timePerRep: 100, prepTime: 5, hasSides: false,
     description: "Repeat 1 time with 100 seconds per rep.",
     breathPattern: "Walk at a comfortable, consistent pace while maintaining upright posture.", benefits: "Improves functional walking tolerance and rhythm.",
-    caution: "Slow down or stop if pain, swelling, or instability appears.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/walking-100-meters.jpg"
+    caution: "Slow down or stop if pain, swelling, or instability appears.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/crutch walking.jpg"
   }
 };
