@@ -110,6 +110,10 @@ const getRepGuidanceText = (step = {}, language = 'en', repGuidance = {}) => {
     return '';
   }
 
+  if (step.category === 'Physio') {
+    return String(totalReps - currentRep + 1);
+  }
+
   return language === 'hi'
     ? `चरण ${currentRep}/${totalReps}`
     : `Step ${currentRep} of ${totalReps}`;

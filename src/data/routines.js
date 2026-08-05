@@ -94,6 +94,7 @@ const masterRoutinesConfig = [
     description: "A 21-step physiotherapy routine for leg and knee rehabilitation with initial guided steps and placeholders for progression.",
     safetyNote: "Move slowly and pain-free. Stop if pain increases, swelling worsens, or you feel unstable.",
     stepKeys: [
+      "foot-pump-physio", "static-quads-physio", "quads-over-roll-physio", "hip-knee-flexion-supine-physio",
       "skateboard-knee-bending", "skateboard-knee-bending", "knee-extension-physio",
       "leg-knee-placeholder-4", "leg-knee-placeholder-5", "leg-knee-placeholder-6",
       "leg-knee-placeholder-7", "leg-knee-placeholder-8", "leg-knee-placeholder-9",

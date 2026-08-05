@@ -869,6 +869,38 @@ export const stepDatabase = {
     type: "time", duration: 60, reps: null, timePerRep: null, prepTime: 5, hasSides: false, breathPattern: "", benefits: "",
     caution: "", audioUrl: "", videoUrl: "", pictureUrl: "" 
   },
+  "foot-pump-physio": {
+    names: { devanagari: "फुट पंप", roman: "Foot Pump", english: "Foot Pump" },
+    category: "Physio",
+    type: "reps", duration: null, reps: 15, timePerRep: 5, prepTime: 5, hasSides: false,
+    description: "Repeat 15 times with 3 seconds per rep.",
+    breathPattern: "Gently bend and straighten ankle. pointing toes up and down, one rep every 3 seconds.", benefits: "Activates calf muscle pump and improves circulation in the lower limb.",
+    caution: "Keep the movement smooth and pain-free.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/foot-pump-physio.jpeg"
+  },
+  "static-quads-physio": {
+    names: { devanagari: "स्टेटिक क्वाड्स", roman: "Static Quads", english: "Static Quads" },
+    category: "Physio",
+    type: "reps", duration: null, reps: 15, timePerRep: 12, prepTime: 10, hasSides: false,
+    description: "Repeat 15 times with 10 seconds hold per rep.",
+    breathPattern: "Tighten the quadriceps firmly against the surface and hold for 10 seconds each rep.", benefits: "Activates quadriceps and supports early-stage knee rehabilitation.",
+    caution: "Do not hold breath during the contraction.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/static-quads-physio.jpeg"
+  },
+  "quads-over-roll-physio": {
+    names: { devanagari: "क्वाड्स ओवर रोल", roman: "Quads Over Roll", english: "Quads Over Roll" },
+    category: "Physio",
+    type: "reps", duration: null, reps: 15, timePerRep: 12, prepTime: 10, hasSides: false,
+    description: "Repeat 15 times with 10 seconds per rep.",
+    breathPattern: "Press the knee down over the roll with steady control, holding for 10 seconds each rep.", benefits: "Improves terminal knee extension and quadriceps activation.",
+    caution: "Use a firm rolled towel or foam roller. Stop if you feel sharp pain.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/quads-over-roll-physio.jpeg"
+  },
+  "hip-knee-flexion-supine-physio": {
+    names: { devanagari: "लेटकर हिप-घुटना फ्लेक्शन", roman: "Hip-Knee Flexion Sleeping", english: "Hip-Knee Flexion Sleeping" },
+    category: "Physio",
+    type: "reps", duration: null, reps: 15, timePerRep: 12, prepTime: 15, hasSides: false,
+    description: "Repeat 15 times with 10 seconds hold per rep.",
+    breathPattern: "Slide the heel toward the seat to flex the hip and knee, hold for 10 seconds, then slowly extend.", benefits: "Restores hip and knee flexion range of motion in a supported lying position.",
+    caution: "Move only within a comfortable, pain-free range.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/hip-knee-flexion-supine-physio.jpeg"
+  },
   "skateboard-knee-bending": {
     names: { devanagari: "स्केटबोर्ड घुटना मोड़ना", roman: "Skateboard Knee Bending", english: "Skateboard Knee Bending" },
     category: "Physio",
@@ -987,7 +1019,7 @@ export const stepDatabase = {
     type: "reps", duration: null, reps: 10, timePerRep: 3, prepTime: 5, hasSides: false,
     description: "Repeat 10 times with 3 seconds per rep.",
     breathPattern: "Bend and rise with control, keeping weight balanced through the feet.", benefits: "Builds lower-body strength and functional control.",
-    caution: "Keep the knees aligned and do not drop quickly.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/squat.jpg"
+    caution: "Keep the knees aligned and do not drop quickly.", audioUrl: "", videoUrl: "", pictureUrl: "/assets/images/squat-physio.jpeg"
   },
   "leg-knee-placeholder-17": {
     names: { devanagari: "रबर बैंड के साथ लेग स्ट्रेच", roman: "Leg Stretch with Rubber Band", english: "Leg Stretch with Rubber Band" },
